@@ -10,6 +10,7 @@ import { InputType, ReceiptType, TransactionType } from '@fuel-ts/transactions';
 import * as GraphQL from 'graphql-request';
 
 import Provider from '../src/provider';
+import {setupTestProvider} from '../src/test-utils/launch-test-provider'
 import type {
   CoinTransactionRequestInput,
   MessageTransactionRequestInput,
@@ -144,7 +145,7 @@ describe('Provider', () => {
   });
 
   it('can get all chain info', async () => {
-    const provider = new Provider('http://127.0.0.1:4000/graphql');
+    using provider = await setupTestProvider();
     const { consensusParameters } = await provider.getChain();
 
     expect(consensusParameters.contractMaxSize).toBeDefined();
