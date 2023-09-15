@@ -17,20 +17,16 @@ import {
   getInputsCoin,
 } from './input';
 import { getOutputsCoin, getOutputsContract, getOutputsContractCreated } from './output';
-import {
-  AddressType,
-  ChainName,
-  OperationName,
-  TransactionTypeName} from './types';
+import { AddressType, ChainName, OperationName, TransactionTypeName } from './types';
 import type {
   InputOutputParam,
   InputParam,
   OperationCoin,
   RawPayloadParam,
   ReceiptParam,
-
-  type Operation,
-  type GetOperationParams} from './types';
+  Operation,
+  GetOperationParams,
+} from './types';
 
 /** @hidden */
 export function getReceiptsByType<T = TransactionResultReceipt>(
