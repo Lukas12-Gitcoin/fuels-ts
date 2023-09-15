@@ -183,7 +183,7 @@ describe('Provider', () => {
     const spyGraphQLClient = jest.spyOn(GraphQL, 'GraphQLClient');
 
     const providerUrl2 = 'http://127.0.0.1:8080/graphql';
-    provider.connect(providerUrl2);
+    await provider.updateUrl(providerUrl2);
 
     expect(provider.url).toBe(providerUrl2);
     expect(spyGraphQLClient).toBeCalledWith(providerUrl2, undefined);
@@ -206,6 +206,17 @@ describe('Provider', () => {
         });
         const response = Promise.resolve(new Response(responseText, options));
 
+        return response;
+      }
+
+      // Mocking `getChain` because it is called by `connect`. If we don't mock it, `connect` will throw
+      if (operationName === 'getChain') {
+        const responseText = JSON.stringify({
+          data: {
+            chain: {},
+          },
+        });
+        const response = Promise.resolve(new Response(responseText, options));
         return response;
       }
       return fetch(url, options);
@@ -294,10 +305,11 @@ describe('Provider', () => {
     expect(provider.cache?.ttl).toEqual(2_500);
   });
 
-  it('can cacheUtxo [invalid numerical]', () => {
-    expect(() => new Provider('http://127.0.0.1:4000/graphql', { cacheUtxo: -500 })).toThrow(
-      'Invalid TTL: -500. Use a value greater than zero.'
+  it('can cacheUtxo [invalid numerical]', async () => {
+    const { error } = await safeExec(() =>
+      Provider.connect('http://127.0.0.1:4000/graphql', { cacheUtxo: -500 })
     );
+    expect(error?.message).toMatch(/Invalid TTL: -500\. Use a value greater than zero/);
   });
 
   it('can cacheUtxo [will not cache inputs if no cache]', async () => {
@@ -451,7 +463,6 @@ describe('Provider', () => {
 
     const owner = Address.fromRandom();
     const resourcesToSpendMock = jest.fn(() => Promise.resolve({ coinsToSpend: [] }));
-    // @ts-expect-error mock
     provider.operations.getCoinsToSpend = resourcesToSpendMock;
     await provider.getResourcesToSpend(owner, []);
 
@@ -584,7 +595,6 @@ describe('Provider', () => {
 
     const owner = Address.fromRandom();
     const resourcesToSpendMock = jest.fn(() => Promise.resolve({ coinsToSpend: [] }));
-    // @ts-expect-error mock
     provider.operations.getCoinsToSpend = resourcesToSpendMock;
     await provider.getResourcesToSpend(owner, [], {
       utxos: [
@@ -650,5 +660,40 @@ describe('Provider', () => {
       '0xe4dfe8fc1b5de2c669efbcc5e4c0a61db175d1b2f03e3cd46ed4396e76695c5b'
     );
     expect(messageProof).toMatchSnapshot();
+  });
+
+  it('can connect', async () => {
+    const provider = await Provider.connect('http://127.0.0.1:4000/graphql');
+
+    // check if the provider was initialized properly
+    expect(provider).toBeInstanceOf(Provider);
+    expect(provider.url).toEqual('http://127.0.0.1:4000/graphql');
+    expect(Provider.chainInfoCache['http://127.0.0.1:4000/graphql']).toBeDefined();
+  });
+
+  it('can invalidate the chain info cache', async () => {
+    const provider = await Provider.connect('http://127.0.0.1:4000/graphql');
+
+    // spy on getChain
+    const spyGetChain = jest.spyOn(provider, 'getChain');
+
+    // invalidate cache
+    await provider.refreshChainInfoCache();
+
+    // check if getChain was called
+    expect(spyGetChain).toHaveBeenCalled();
+  });
+
+  it('doesnt refetch the chain info again if it is already cached', async () => {
+    Provider.chainInfoCache = {};
+    const spyGetChainInfo = jest.spyOn(Provider, 'getChainInfoWithoutInstance');
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const provider1 = await Provider.connect('http://127.0.0.1:4000/graphql');
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const provider2 = await Provider.connect('http://127.0.0.1:4000/graphql');
+
+    // `getChainInfoWithoutInstance` should only be called once, we reuse the cached value for the second provider
+    expect(spyGetChainInfo).toHaveBeenCalledTimes(1);
   });
 });

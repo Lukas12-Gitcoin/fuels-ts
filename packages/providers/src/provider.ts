@@ -64,6 +64,24 @@ export type ContractResult = {
   bytecode: string;
 };
 
+type ConsensusParameters = {
+  contractMaxSize: BN;
+  maxInputs: BN;
+  maxOutputs: BN;
+  maxWitnesses: BN;
+  maxGasPerTx: BN;
+  maxScriptLength: BN;
+  maxScriptDataLength: BN;
+  maxStorageSlots: BN;
+  maxPredicateLength: BN;
+  maxPredicateDataLength: BN;
+  maxGasPerPredicate: BN;
+  gasPriceFactor: BN;
+  gasPerByte: BN;
+  maxMessageDataLength: BN;
+  chainId: BN;
+};
+
 /**
  * Chain information
  */
@@ -71,23 +89,7 @@ export type ChainInfo = {
   name: string;
   baseChainHeight: BN;
   peerCount: number;
-  consensusParameters: {
-    contractMaxSize: BN;
-    maxInputs: BN;
-    maxOutputs: BN;
-    maxWitnesses: BN;
-    maxGasPerTx: BN;
-    maxScriptLength: BN;
-    maxScriptDataLength: BN;
-    maxStorageSlots: BN;
-    maxPredicateLength: BN;
-    maxPredicateDataLength: BN;
-    maxGasPerPredicate: BN;
-    gasPriceFactor: BN;
-    gasPerByte: BN;
-    maxMessageDataLength: BN;
-    chainId: BN;
-  };
+  consensusParameters: ConsensusParameters;
   latestBlock: {
     id: string;
     height: BN;
@@ -206,25 +208,79 @@ export type ProviderCallParams = {
 };
 
 /**
+ * URL - Consensus Params mapping.
+ */
+type ChainInfoCache = Record<string, ChainInfo>;
+
+/**
  * A provider for connecting to a node
  */
 export default class Provider {
   operations: ReturnType<typeof getOperationsSdk>;
   cache?: MemoryCache;
+  static chainInfoCache: ChainInfoCache = {};
 
   /**
    * Constructor to initialize a Provider.
    *
    * @param url - GraphQL endpoint of the Fuel node
+   * @param chainInfo - Chain info of the Fuel node
    * @param options - Additional options for the provider
+   * @hidden
    */
   constructor(
     /** GraphQL endpoint of the Fuel node */
     public url: string,
+    chainInfo: ChainInfo,
     public options: ProviderOptions = {}
   ) {
     this.operations = this.createOperations(url, options);
+    Provider.chainInfoCache[url] = chainInfo;
     this.cache = options.cacheUtxo ? new MemoryCache(options.cacheUtxo) : undefined;
+  }
+
+  /**
+   * Creates a new instance of the Provider class. This is the recommended way to initialize a Provider.
+   * @param url - GraphQL endpoint of the Fuel node
+   * @param options - Additional options for the provider
+   */
+  static async connect(url: string, options: ProviderOptions = {}) {
+    let chainInfo: ChainInfo;
+    // If the chain info is already cached, use it.
+    if (Provider.chainInfoCache[url]) {
+      chainInfo = Provider.chainInfoCache[url];
+    } else {
+      chainInfo = await this.getChainInfoWithoutInstance(url);
+    }
+    const provider = new Provider(url, chainInfo, options);
+    return provider;
+  }
+
+  /**
+   * Re-fetches the chain info from the chain for the current URL.
+   */
+  async refreshChainInfoCache() {
+    const chainInfo = await this.getChain();
+    Provider.chainInfoCache[this.url] = chainInfo;
+  }
+
+  /**
+   * Returns the cached chainInfo for the current URL.
+   */
+  getCachedChainInfo() {
+    return Provider.chainInfoCache[this.url];
+  }
+
+  /**
+   * Updates the URL for the provider and fetches the consensus parameters for the new URL, if needed.
+   */
+  async updateUrl(url: string) {
+    if (!Provider.chainInfoCache[url]) {
+      const chainInfo = await Provider.getChainInfoWithoutInstance(url);
+      Provider.chainInfoCache[url] = chainInfo;
+    }
+    this.operations = this.createOperations(url);
+    this.url = url;
   }
 
   /**
@@ -241,12 +297,13 @@ export default class Provider {
   }
 
   /**
-   * Connect provider to a different node url.
-   *
-   * @param url - The URL of the Fuel node to connect to.
+   * A method to get the chain info for a given node URL when we don't have access to an instance of the Provider class.
    */
-  connect(url: string) {
-    this.operations = this.createOperations(url);
+  static async getChainInfoWithoutInstance(url: string) {
+    const gqlClient = new GraphQLClient(url);
+    const operations = getOperationsSdk(gqlClient);
+    const { chain } = await operations.getChain();
+    return processGqlChain(chain);
   }
 
   /**

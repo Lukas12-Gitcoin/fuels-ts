@@ -77,7 +77,7 @@ type MainArgs = [
 ];
 
 const setup = async (balance = 5_000) => {
-  const provider = new Provider('http://127.0.0.1:4000/graphql');
+  const provider = await Provider.connect('http://127.0.0.1:4000/graphql');
 
   // Create wallet
   const wallet = await generateTestWallet(provider, [[balance, BaseAssetId]]);
@@ -133,13 +133,14 @@ describe('Vector Types Validation', () => {
 
   it('can use supported vector types [predicate-vector-types]', async () => {
     const wallet = await setup();
-    const receiver = Wallet.fromAddress(Address.fromRandom());
+    const receiver = Wallet.fromAddress(Address.fromRandom(), wallet.provider);
     const chainId = await wallet.provider.getChainId();
     const amountToPredicate = 100;
     const amountToReceiver = 50;
     const predicate = new Predicate<MainArgs>(
       predicateVectorTypes,
       chainId,
+      wallet.provider,
       predicateVectorTypesAbi
     );
 

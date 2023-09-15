@@ -25,6 +25,7 @@ import { versions } from '@fuel-ts/versions';
 import { runVersions } from '@fuel-ts/versions/cli';
 import { Wallet } from '@fuel-ts/wallet';
 import { FUEL_NETWORK_URL } from '@fuel-ts/wallet/configs';
+// TODO: Add `launchNode` and `launchNodeAndGetWallets` here
 import { generateTestWallet, seedTestWallet } from '@fuel-ts/wallet/test-utils';
 import { WalletManager } from '@fuel-ts/wallet-manager';
 import { english, Language } from '@fuel-ts/wordlists';

@@ -20,7 +20,7 @@ describe('Predicate', () => {
     };
 
     beforeEach(async () => {
-      const provider = new Provider('http://127.0.0.1:4000/graphql');
+      const provider = await Provider.connect('http://127.0.0.1:4000/graphql');
 
       const quantities: CoinQuantityLike[] = [
         {
@@ -38,8 +38,8 @@ describe('Predicate', () => {
       const predicate = new Predicate(
         predicateBytesConfigurable,
         chainId,
-        predicateAbiConfigurable,
-        wallet.provider
+        wallet.provider,
+        predicateAbiConfigurable
       );
 
       const amountToTransfer = 200;
@@ -47,7 +47,9 @@ describe('Predicate', () => {
       await fundPredicate(wallet, predicate, 5000);
 
       // create destination wallet
-      const destination = WalletUnlocked.generate();
+      const destination = WalletUnlocked.generate({
+        provider: wallet.provider,
+      });
 
       await assertBalance(destination, 0, BaseAssetId);
 
@@ -68,14 +70,16 @@ describe('Predicate', () => {
       const predicate = new Predicate(
         predicateBytesConfigurable,
         chainId,
-        predicateAbiConfigurable,
         wallet.provider,
+        predicateAbiConfigurable,
         configurableConstants
       );
 
       const amountToTransfer = 300;
 
-      const destination = WalletUnlocked.generate();
+      const destination = WalletUnlocked.generate({
+        provider: wallet.provider,
+      });
 
       await assertBalance(destination, 0, BaseAssetId);
 
@@ -99,14 +103,16 @@ describe('Predicate', () => {
       const predicate = new Predicate(
         predicateBytesConfigurable,
         chainId,
-        predicateAbiConfigurable,
         wallet.provider,
+        predicateAbiConfigurable,
         configurableConstants
       );
 
       const amountToTransfer = 300;
 
-      const destination = WalletUnlocked.generate();
+      const destination = WalletUnlocked.generate({
+        provider: wallet.provider,
+      });
 
       await assertBalance(destination, 0, BaseAssetId);
 
@@ -134,14 +140,16 @@ describe('Predicate', () => {
       const predicate = new Predicate(
         predicateBytesConfigurable,
         chainId,
-        predicateAbiConfigurable,
         wallet.provider,
+        predicateAbiConfigurable,
         configurableConstants
       );
 
       const amountToTransfer = 300;
 
-      const destination = WalletUnlocked.generate();
+      const destination = WalletUnlocked.generate({
+        provider: wallet.provider,
+      });
 
       await assertBalance(destination, 0, BaseAssetId);
 
@@ -160,11 +168,13 @@ describe('Predicate', () => {
       const predicate = new Predicate(
         predicateBytesConfigurable,
         chainId,
-        predicateAbiConfigurable,
-        wallet.provider
+        wallet.provider,
+        predicateAbiConfigurable
       );
 
-      const destination = WalletUnlocked.generate();
+      const destination = WalletUnlocked.generate({
+        provider: wallet.provider,
+      });
 
       await expect(predicate.transfer(destination.address, 300)).rejects.toThrow(
         'Invalid transaction'
@@ -176,8 +186,8 @@ describe('Predicate', () => {
         const predicate = new Predicate(
           predicateBytesTrue,
           chainId,
-          predicateAbiTrue,
           wallet.provider,
+          predicateAbiTrue,
           {
             constant: 'NADA',
           }
@@ -194,8 +204,8 @@ describe('Predicate', () => {
         const predicate = new Predicate(
           predicateBytesConfigurable,
           chainId,
-          predicateAbiConfigurable,
           wallet.provider,
+          predicateAbiConfigurable,
           {
             NOPE: 'NADA',
           }
@@ -209,9 +219,16 @@ describe('Predicate', () => {
       const errMsg = `Error setting configurable constants: Cannot validate configurable constants because the Predicate was instantiated without a JSON ABI.`;
 
       expect(() => {
-        const predicate = new Predicate(predicateBytesConfigurable, chainId, undefined, undefined, {
-          NOPE: 'NADA',
-        });
+        const predicate = new Predicate(
+          predicateBytesConfigurable,
+          chainId,
+          wallet.provider,
+          undefined,
+          {
+            NOPE: 'NADA',
+          }
+        );
+
         predicate.setData('NADA');
       }).toThrow(errMsg);
     });
