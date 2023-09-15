@@ -10,13 +10,13 @@ import { InputType, ReceiptType, TransactionType } from '@fuel-ts/transactions';
 import * as GraphQL from 'graphql-request';
 
 import Provider from '../src/provider';
-import { setupTestProvider } from '../src/test-utils/launch-test-provider';
 import type {
   CoinTransactionRequestInput,
   MessageTransactionRequestInput,
 } from '../src/transaction-request';
 import { ScriptTransactionRequest } from '../src/transaction-request';
 import { fromTai64ToUnix, fromUnixToTai64 } from '../src/utils';
+import { setupTestProvider } from '../src/utils/test-utils/launch-test-provider';
 
 import { messageProofResponse } from './fixtures';
 
@@ -26,7 +26,7 @@ afterEach(() => {
 
 describe('Provider', () => {
   it('can getVersion()', async () => {
-    const provider = new Provider('http://127.0.0.1:4000/graphql');
+    using provider = await setupTestProvider();
 
     const version = await provider.getVersion();
 
@@ -34,7 +34,7 @@ describe('Provider', () => {
   });
 
   it('can call()', async () => {
-    const provider = new Provider('http://127.0.0.1:4000/graphql');
+    using provider = await setupTestProvider();
 
     const CoinInputs: CoinTransactionRequestInput[] = [
       {
@@ -99,7 +99,7 @@ describe('Provider', () => {
   // as we test this in other modules like call contract its ok to
   // skip for now
   it.skip('can sendTransaction()', async () => {
-    const provider = new Provider('http://127.0.0.1:4000/graphql');
+    using provider = await setupTestProvider();
 
     const response = await provider.sendTransaction({
       type: TransactionType.Script,
@@ -166,7 +166,7 @@ describe('Provider', () => {
 
   it('can get node info including some consensus parameters properties', async () => {
     // #region provider-definition
-    const provider = new Provider('http://127.0.0.1:4000/graphql');
+    using provider = await setupTestProvider();
     const { minGasPrice, gasPerByte, gasPriceFactor, maxGasPerTx, nodeVersion } =
       await provider.getNodeInfo();
     // #endregion provider-definition
@@ -178,21 +178,18 @@ describe('Provider', () => {
     expect(nodeVersion).toBeDefined();
   });
 
-  it('can change the provider url of the current instance', () => {
-    const providerUrl1 = 'http://127.0.0.1:4000/graphql';
-    const providerUrl2 = 'http://127.0.0.1:8080/graphql';
-    const provider = new Provider(providerUrl1);
+  it('can change the provider url of the current instance', async () => {
+    using provider = await setupTestProvider();
     const spyGraphQLClient = jest.spyOn(GraphQL, 'GraphQLClient');
 
-    expect(provider.url).toBe(providerUrl1);
+    const providerUrl2 = 'http://127.0.0.1:8080/graphql';
     provider.connect(providerUrl2);
+
     expect(provider.url).toBe(providerUrl2);
     expect(spyGraphQLClient).toBeCalledWith(providerUrl2, undefined);
   });
 
   it('can accept a custom fetch function', async () => {
-    const providerUrl = 'http://127.0.0.1:4000/graphql';
-
     const customFetch = async (
       url: string,
       options: {
@@ -213,14 +210,14 @@ describe('Provider', () => {
       }
       return fetch(url, options);
     };
+    using provider = await setupTestProvider({ fetch: customFetch });
 
-    const provider = new Provider(providerUrl, { fetch: customFetch });
     expect(await provider.getVersion()).toEqual('0.30.0');
   });
 
   it('can force-produce blocks', async () => {
     // #region Provider-produce-blocks
-    const provider = new Provider('http://127.0.0.1:4000/graphql');
+    using provider = await setupTestProvider();
 
     const block = await provider.getBlock('latest');
     if (!block) {
@@ -241,7 +238,7 @@ describe('Provider', () => {
   // `block_production` config option for `fuel_core`.
   // See: https://github.com/FuelLabs/fuel-core/blob/def8878b986aedad8434f2d1abf059c8cbdbb8e2/crates/services/consensus_module/poa/src/config.rs#L20
   it.skip('can force-produce blocks with custom timestamps', async () => {
-    const provider = new Provider('http://127.0.0.1:4000/graphql');
+    using provider = await setupTestProvider();
 
     const block = await provider.getBlock('latest');
     if (!block) {
@@ -282,14 +279,14 @@ describe('Provider', () => {
     expect(producedBlocks).toEqual(expectedBlocks);
   });
 
-  it('can cacheUtxo [undefined]', () => {
-    const provider = new Provider('http://127.0.0.1:4000/graphql');
+  it('can cacheUtxo [undefined]', async () => {
+    using provider = await setupTestProvider();
 
     expect(provider.cache).toEqual(undefined);
   });
 
-  it('can cacheUtxo [numerical]', () => {
-    const provider = new Provider('http://127.0.0.1:4000/graphql', {
+  it('can cacheUtxo [numerical]', async () => {
+    using provider = await setupTestProvider({
       cacheUtxo: 2500,
     });
 
@@ -304,7 +301,7 @@ describe('Provider', () => {
   });
 
   it('can cacheUtxo [will not cache inputs if no cache]', async () => {
-    const provider = new Provider('http://127.0.0.1:4000/graphql');
+    using provider = await setupTestProvider();
     const transactionRequest = new ScriptTransactionRequest({});
 
     const { error } = await safeExec(() => provider.sendTransaction(transactionRequest));
@@ -314,9 +311,10 @@ describe('Provider', () => {
   });
 
   it('can cacheUtxo [will not cache inputs cache enabled + no coins]', async () => {
-    const provider = new Provider('http://127.0.0.1:4000/graphql', {
+    using provider = await setupTestProvider({
       cacheUtxo: 1,
     });
+
     const MessageInput: MessageTransactionRequestInput = {
       type: InputType.Message,
       amount: 100,

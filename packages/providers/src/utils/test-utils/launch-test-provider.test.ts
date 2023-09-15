@@ -1,7 +1,7 @@
 import { safeExec } from '@fuel-ts/errors/test-utils';
 
-import Provider from '../provider';
-import { sleep } from '../utils';
+import { sleep } from '..';
+import Provider from '../../provider';
 
 import { setupTestProvider } from './launch-test-provider';
 

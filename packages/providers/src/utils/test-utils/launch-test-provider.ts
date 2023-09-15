@@ -1,7 +1,7 @@
 import { launchNode } from '@fuel-ts/utils/test-utils';
 
-import type { ProviderOptions } from '../provider';
-import Provider from '../provider';
+import type { ProviderOptions } from '../../provider';
+import Provider from '../../provider';
 
 export async function setupTestProvider(providerOptions?: ProviderOptions) {
   // @ts-expect-error this is a polyfill
