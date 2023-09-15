@@ -1,8 +1,7 @@
+import { setupTestProvider } from '@fuel-ts/providers/test-utils';
 import type { CoinQuantityLike, Contract } from 'fuels';
 import {
-  FUEL_NETWORK_URL,
   BaseAssetId,
-  Provider,
   ScriptTransactionRequest,
   Wallet,
   WalletUnlocked,
@@ -13,9 +12,11 @@ import {
 import type { SnippetProjectEnum } from '../projects';
 import { getSnippetProjectArtifacts } from '../projects';
 
-export const getTestWallet = async (seedQuantities?: CoinQuantityLike[]) => {
+export const getTestWallet = async (
+  seedQuantities?: CoinQuantityLike[]
+): Promise<WalletUnlocked & Disposable> => {
   // create a provider using the Fuel network URL
-  const provider = new Provider(FUEL_NETWORK_URL);
+  const { provider, cleanup } = await setupTestProvider(undefined, false);
 
   // instantiate the genesis wallet with its secret key
   const genesisWallet = new WalletUnlocked(process.env.GENESIS_SECRET || '0x01', provider);
@@ -55,7 +56,11 @@ export const getTestWallet = async (seedQuantities?: CoinQuantityLike[]) => {
   await response.wait();
 
   // return the test wallet
-  return testWallet;
+  return Object.assign(testWallet, {
+    [Symbol.dispose]() {
+      cleanup();
+    },
+  });
 };
 
 export const createAndDeployContractFromProject = async (
