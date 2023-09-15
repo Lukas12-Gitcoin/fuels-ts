@@ -9,7 +9,7 @@
         "useTabs": false,
         "singleQuote": true,
         "bracketSpacing": true,
-        "parser": "typescript"
+        "trailingComma": "es5"
       }
     },
     {

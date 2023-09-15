@@ -10,7 +10,7 @@ import { InputType, ReceiptType, TransactionType } from '@fuel-ts/transactions';
 import * as GraphQL from 'graphql-request';
 
 import Provider from '../src/provider';
-import {setupTestProvider} from '../src/test-utils/launch-test-provider'
+import { setupTestProvider } from '../src/test-utils/launch-test-provider';
 import type {
   CoinTransactionRequestInput,
   MessageTransactionRequestInput,
