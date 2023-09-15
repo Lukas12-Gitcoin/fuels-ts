@@ -5,8 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  cross-fetch: ^4.0.0
-  node-fetch: ^2.6.13
+  cross-fetch: 4.0.0
 
 importers:
 
@@ -621,7 +620,7 @@ importers:
   packages/forc:
     dependencies:
       node-fetch:
-        specifier: ^2.6.13
+        specifier: ^2.6.7
         version: 2.6.13
       shelljs:
         specifier: ^0.8.5
@@ -630,7 +629,7 @@ importers:
   packages/fuel-core:
     dependencies:
       node-fetch:
-        specifier: ^2.6.13
+        specifier: ^2.6.7
         version: 2.6.13
       shelljs:
         specifier: ^0.8.5
