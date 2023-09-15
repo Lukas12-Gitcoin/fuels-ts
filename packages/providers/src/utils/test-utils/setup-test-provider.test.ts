@@ -17,9 +17,7 @@ describe('launchTestProvider', () => {
     // Sleep for some time until the process is killed
     await sleep(2500);
 
-    const provider2 = new Provider(url);
-
-    const { error } = await safeExec(() => provider2.getChain());
+    const { error } = await safeExec(() => Provider.connect(url));
 
     const ipAndPort = url.replace('http://', '').replace('/graphql', '');
 

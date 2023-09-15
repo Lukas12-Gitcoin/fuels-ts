@@ -15,7 +15,7 @@ export async function setupTestProvider<Dispose extends boolean = true>(
   Symbol.asyncDispose ??= Symbol('Symbol.asyncDispose');
 
   const { cleanup, ip, port } = await launchNode({});
-  const provider = new Provider(`http://${ip}:${port}/graphql`, providerOptions);
+  const provider = await Provider.connect(`http://${ip}:${port}/graphql`, providerOptions);
 
   const dispose = runCleanup ?? true;
   // @ts-expect-error TODO: fix later
