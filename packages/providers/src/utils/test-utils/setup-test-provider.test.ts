@@ -3,7 +3,7 @@ import { safeExec } from '@fuel-ts/errors/test-utils';
 import { sleep } from '..';
 import Provider from '../../provider';
 
-import { setupTestProvider } from './launch-test-provider';
+import { setupTestProvider } from './setup-test-provider';
 
 describe('launchTestProvider', () => {
   it('kills the node after going out of scope', async () => {

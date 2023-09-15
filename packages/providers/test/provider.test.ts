@@ -16,7 +16,7 @@ import type {
 } from '../src/transaction-request';
 import { ScriptTransactionRequest } from '../src/transaction-request';
 import { fromTai64ToUnix, fromUnixToTai64 } from '../src/utils';
-import { setupTestProvider } from '../src/utils/test-utils/launch-test-provider';
+import { setupTestProvider } from '../src/utils/test-utils/setup-test-provider';
 
 import { messageProofResponse } from './fixtures';
 
@@ -335,9 +335,10 @@ describe('Provider', () => {
   });
 
   it('can cacheUtxo [will cache inputs cache enabled + coins]', async () => {
-    const provider = new Provider('http://127.0.0.1:4000/graphql', {
+    using provider = await setupTestProvider({
       cacheUtxo: 10000,
     });
+
     const EXPECTED: BytesLike[] = [
       '0xbc90ada45d89ec6648f8304eaf8fa2b03384d3c0efabc192b849658f4689b9c500',
       '0xbc90ada45d89ec6648f8304eaf8fa2b03384d3c0efabc192b849658f4689b9c501',
@@ -394,7 +395,7 @@ describe('Provider', () => {
   });
 
   it('can cacheUtxo [will cache inputs and also use in exclude list]', async () => {
-    const provider = new Provider('http://127.0.0.1:4000/graphql', {
+    using provider = await setupTestProvider({
       cacheUtxo: 10000,
     });
     const EXPECTED: BytesLike[] = [
@@ -468,7 +469,7 @@ describe('Provider', () => {
   });
 
   it('can cacheUtxo [will cache inputs cache enabled + coins]', async () => {
-    const provider = new Provider('http://127.0.0.1:4000/graphql', {
+    using provider = await setupTestProvider({
       cacheUtxo: 10000,
     });
     const EXPECTED: BytesLike[] = [
@@ -527,7 +528,7 @@ describe('Provider', () => {
   });
 
   it('can cacheUtxo [will cache inputs and also merge/de-dupe in exclude list]', async () => {
-    const provider = new Provider('http://127.0.0.1:4000/graphql', {
+    using provider = await setupTestProvider({
       cacheUtxo: 10000,
     });
     const EXPECTED: BytesLike[] = [
@@ -613,7 +614,7 @@ describe('Provider', () => {
   });
 
   it('can getBlocks', async () => {
-    const provider = new Provider('http://127.0.0.1:4000/graphql');
+    using provider = await setupTestProvider();
     // Force-producing some blocks to make sure that 10 blocks exist
     await provider.produceBlocks(10);
     // #region Provider-get-blocks
@@ -637,7 +638,7 @@ describe('Provider', () => {
   it('can getMessageProof with all data', async () => {
     // Create a mock provider to return the message proof
     // It test mainly types and converstions
-    const provider = new Provider('http://127.0.0.1:4000/graphql', {
+    using provider = await setupTestProvider({
       fetch: async (url, options) => {
         const messageProof = JSON.stringify(messageProofResponse);
         return Promise.resolve(new Response(messageProof, options));

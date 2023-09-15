@@ -1,1 +1,1 @@
-export * from './utils/test-utils/launch-test-provider';
+export * from './utils/test-utils/setup-test-provider';
