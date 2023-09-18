@@ -1,7 +1,7 @@
 import type { BytesLike } from '@ethersproject/bytes';
 import { generateTestWallet } from '@fuel-ts/wallet/test-utils';
-import { BaseAssetId, ContractFactory, Provider } from 'fuels';
-import type { Interface, JsonAbi, Contract, WalletUnlocked } from 'fuels';
+import { BaseAssetId, ContractFactory } from 'fuels';
+import type { Interface, JsonAbi, Contract, WalletUnlocked, Provider } from 'fuels';
 
 let walletInstance: WalletUnlocked;
 let contractInstance: Contract;
@@ -18,9 +18,8 @@ const deployContract = async (factory: ContractFactory, useCache: boolean = true
   return contractInstance;
 };
 
-const createWallet = async () => {
+const createWallet = async (provider: Provider) => {
   if (walletInstance) return walletInstance;
-  const provider = await Provider.connect('http://127.0.0.1:4000/graphql', { cacheUtxo: 10 });
   walletInstance = await generateTestWallet(provider, [
     [5_000_000, BaseAssetId],
     [5_000_000, '0x0101010101010101010101010101010101010101010101010101010101010101'],
@@ -28,17 +27,17 @@ const createWallet = async () => {
   return walletInstance;
 };
 
-export const setup = async ({ contractBytecode, abi, cache }: SetupConfig) => {
+export const setup = async (provider: Provider, { contractBytecode, abi, cache }: SetupConfig) => {
   // Create wallet
-  const wallet = await createWallet();
+  const wallet = await createWallet(provider);
   const factory = new ContractFactory(contractBytecode, abi, wallet);
   const contract = await deployContract(factory, cache);
   return contract;
 };
 
 export const setupContractWithConfig =
-  (defaultConfig: SetupConfig) => async (config?: Partial<SetupConfig>) =>
-    setup({
+  (defaultConfig: SetupConfig) => async (provider: Provider, config?: Partial<SetupConfig>) =>
+    setup(provider, {
       contractBytecode: defaultConfig.contractBytecode,
       abi: defaultConfig.abi,
       ...config,

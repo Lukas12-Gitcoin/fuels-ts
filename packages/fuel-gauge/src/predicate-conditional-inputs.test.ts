@@ -1,14 +1,7 @@
+import { setupTestProvider } from '@fuel-ts/providers/test-utils';
 import { generateTestWallet } from '@fuel-ts/wallet/test-utils';
 import { readFileSync } from 'fs';
-import {
-  Provider,
-  FUEL_NETWORK_URL,
-  BaseAssetId,
-  Predicate,
-  Wallet,
-  ScriptTransactionRequest,
-  bn,
-} from 'fuels';
+import { BaseAssetId, Predicate, Wallet, ScriptTransactionRequest, bn } from 'fuels';
 import { join } from 'path';
 
 import abiJSON from '../fixtures/forc-projects/predicate-conditional-inputs/out/debug/predicate-conditional-inputs-abi.json';
@@ -25,7 +18,7 @@ describe('PredicateConditionalInputs', () => {
   const assetIdB = '0x0202020202020202020202020202020202020202020202020202020202020202';
 
   it('should execute custom transaction where predicate transfers to Alice (ALICE PAYS FEES)', async () => {
-    const provider = await Provider.connect(FUEL_NETWORK_URL);
+    await using provider = await setupTestProvider();
 
     const aliceWallet = Wallet.generate({
       provider,
@@ -97,7 +90,7 @@ describe('PredicateConditionalInputs', () => {
   });
 
   it('should execute custom transaction where predicate transfer to Alice (PREDICATE PAYS FEES)', async () => {
-    const provider = await Provider.connect(FUEL_NETWORK_URL);
+    await using provider = await setupTestProvider();
 
     const aliceWallet = Wallet.generate({
       provider,

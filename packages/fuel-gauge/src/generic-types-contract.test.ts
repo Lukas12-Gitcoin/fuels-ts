@@ -1,3 +1,4 @@
+import { setupTestProvider } from '@fuel-ts/providers/test-utils';
 import { readFileSync } from 'fs';
 import { toHex } from 'fuels';
 import { join } from 'path';
@@ -15,7 +16,9 @@ const contractBytecode = readFileSync(
 
 describe('GenericTypesContract', () => {
   it('should call complex contract function with generic type', async () => {
-    const contract = await setup({
+    await using provider = await setupTestProvider({ cacheUtxo: 10 });
+
+    const contract = await setup(provider, {
       abi: abiJSON,
       contractBytecode,
     });

@@ -1,7 +1,8 @@
 // #region Testing-with-jest-ts
 import { safeExec } from '@fuel-ts/errors/test-utils';
+import { setupTestProvider } from '@fuel-ts/providers/test-utils';
 import { generateTestWallet } from '@fuel-ts/wallet/test-utils';
-import { ContractFactory, Provider, toHex, BaseAssetId, Wallet } from 'fuels';
+import { ContractFactory, toHex, BaseAssetId, Wallet } from 'fuels';
 
 import storageSlots from '../contract/out/debug/demo-contract-storage_slots.json';
 
@@ -10,7 +11,7 @@ import bytecode from './generated-types/DemoContractAbi.hex';
 
 describe('ExampleContract', () => {
   it('should return the input', async () => {
-    const provider = await Provider.connect('http://127.0.0.1:4000/graphql');
+    await using provider = await setupTestProvider();
     const wallet = await generateTestWallet(provider, [[1_000, BaseAssetId]]);
 
     // Deploy
@@ -30,7 +31,7 @@ describe('ExampleContract', () => {
   });
 
   it('deployContract method', async () => {
-    const provider = await Provider.connect('http://127.0.0.1:4000/graphql');
+    await using provider = await setupTestProvider();
     const wallet = await generateTestWallet(provider, [[1_000, BaseAssetId]]);
 
     // Deploy
@@ -48,7 +49,7 @@ describe('ExampleContract', () => {
 // #endregion Testing-with-jest-ts
 
 it('should throw when simulating via contract factory with wallet with no resources', async () => {
-  const provider = await Provider.connect('http://127.0.0.1:4000/graphql');
+  await using provider = await setupTestProvider();
   const fundedWallet = await generateTestWallet(provider, [[1_000, BaseAssetId]]);
   const unfundedWallet = Wallet.generate({ provider });
 
@@ -62,7 +63,7 @@ it('should throw when simulating via contract factory with wallet with no resour
 });
 
 it('should throw when dry running via contract factory with wallet with no resources', async () => {
-  const provider = await Provider.connect('http://127.0.0.1:4000/graphql');
+  await using provider = await setupTestProvider();
   const fundedWallet = await generateTestWallet(provider, [[1_000, BaseAssetId]]);
   const unfundedWallet = Wallet.generate({ provider });
 

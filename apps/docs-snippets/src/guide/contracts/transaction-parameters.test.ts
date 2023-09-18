@@ -1,17 +1,11 @@
-import type { Contract } from 'fuels';
 import { BN } from 'fuels';
 
 import { SnippetProjectEnum } from '../../../projects';
 import { createAndDeployContractFromProject } from '../../utils';
 
 describe(__filename, () => {
-  let contract: Contract;
-
-  beforeAll(async () => {
-    contract = await createAndDeployContractFromProject(SnippetProjectEnum.COUNTER);
-  });
-
   it('should successfully execute contract call with txParams', async () => {
+    await using contract = await createAndDeployContractFromProject(SnippetProjectEnum.COUNTER);
     // #region transaction-parameters-2
     const gasPrice = 1;
     const gasLimit = 3_500_000;
@@ -35,6 +29,8 @@ describe(__filename, () => {
   });
 
   it('should fail to execute call if gasLimit is too low', async () => {
+    await using contract = await createAndDeployContractFromProject(SnippetProjectEnum.COUNTER);
+
     // #region transaction-parameters-3
     await expect(
       contract.functions

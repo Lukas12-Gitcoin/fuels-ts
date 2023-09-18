@@ -1,6 +1,5 @@
 import { hexlify } from '@ethersproject/bytes';
-import { Provider } from '@fuel-ts/providers';
-import { FUEL_NETWORK_URL } from '@fuel-ts/wallet/configs';
+import { setupTestProvider } from '@fuel-ts/providers/test-utils';
 
 import { Predicate } from '../../src/predicate';
 import { defaultPredicateAbi } from '../fixtures/abi/default';
@@ -10,18 +9,16 @@ describe('Predicate', () => {
   describe('Functions', () => {
     const chainId = 0;
     const predicateAddress = '0x4f780df441f7a02b5c1e718fcd779776499a0d1069697db33f755c82d7bae02b';
-    let provider: Provider;
 
-    beforeAll(async () => {
-      provider = await Provider.connect(FUEL_NETWORK_URL);
-    });
-
-    it('sets predicate address for given byte code', () => {
+    it('sets predicate address for given byte code', async () => {
+      await using provider = await setupTestProvider();
       const predicate = new Predicate(defaultPredicateBytecode, chainId, provider);
       expect(predicate.address.toB256()).toEqual(predicateAddress);
     });
 
-    it('sets predicate data for given ABI', () => {
+    it('sets predicate data for given ABI', async () => {
+      await using provider = await setupTestProvider();
+
       const predicate = new Predicate(
         defaultPredicateBytecode,
         chainId,
@@ -35,7 +32,9 @@ describe('Predicate', () => {
       expect(hexlify(predicate.predicateData)).toEqual(b256);
     });
 
-    it('throws when predicate ABI has no main function', () => {
+    it('throws when predicate ABI has no main function', async () => {
+      await using provider = await setupTestProvider();
+
       const abiWithNoMain = {
         ...defaultPredicateAbi,
         functions: [

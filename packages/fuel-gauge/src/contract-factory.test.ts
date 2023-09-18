@@ -1,13 +1,14 @@
+import { setupTestProvider } from '@fuel-ts/providers/test-utils';
 import { generateTestWallet } from '@fuel-ts/wallet/test-utils';
 import { readFileSync } from 'fs';
-import { bn, toHex, Interface, Provider, ContractFactory, BaseAssetId } from 'fuels';
+import type { Provider } from 'fuels';
+import { bn, toHex, Interface, ContractFactory, BaseAssetId } from 'fuels';
 import { join } from 'path';
 
 import storageSlots from '../fixtures/forc-projects/storage-test-contract/out/debug/storage-test-storage_slots.json';
 
 describe('Contract Factory', () => {
-  const createContractFactory = async () => {
-    const provider = await Provider.connect('http://127.0.0.1:4000/graphql');
+  const createContractFactory = async (provider: Provider) => {
     const wallet = await generateTestWallet(provider, [[5_000_000, BaseAssetId]]);
 
     // load the byteCode of the contract, generated from Sway source
@@ -31,7 +32,8 @@ describe('Contract Factory', () => {
   };
 
   it('Creates a factory from inputs that can return call results', async () => {
-    const factory = await createContractFactory();
+    await using provider = await setupTestProvider();
+    const factory = await createContractFactory(provider);
 
     const contact = await factory.deployContract();
 
@@ -48,8 +50,8 @@ describe('Contract Factory', () => {
   });
 
   it('Creates a factory from inputs that can return transaction results', async () => {
-    const factory = await createContractFactory();
-
+    await using provider = await setupTestProvider();
+    const factory = await createContractFactory(provider);
     const contact = await factory.deployContract();
 
     expect(contact.interface).toBeInstanceOf(Interface);
@@ -90,8 +92,8 @@ describe('Contract Factory', () => {
   });
 
   it('Creates a factory from inputs that can prepare call data', async () => {
-    const factory = await createContractFactory();
-
+    await using provider = await setupTestProvider();
+    const factory = await createContractFactory(provider);
     const contract = await factory.deployContract();
 
     const prepared = contract.functions.increment_counter(1).getCallConfig();
@@ -106,7 +108,8 @@ describe('Contract Factory', () => {
   });
 
   it('Creates a contract with initial storage fixed var names', async () => {
-    const factory = await createContractFactory();
+    await using provider = await setupTestProvider();
+    const factory = await createContractFactory(provider);
     const contract = await factory.deployContract({
       storageSlots,
     });
@@ -133,7 +136,8 @@ describe('Contract Factory', () => {
   });
 
   it('Creates a contract with initial storage (dynamic key)', async () => {
-    const factory = await createContractFactory();
+    await using provider = await setupTestProvider();
+    const factory = await createContractFactory(provider);
     const b256 = '0x626f0c36909faecc316056fca8be684ab0cd06afc63247dc008bdf9e433f927a';
 
     const contact = await factory.deployContract({
@@ -147,7 +151,8 @@ describe('Contract Factory', () => {
   });
 
   it('Creates a contract with initial storage. Both dynamic key and fixed vars', async () => {
-    const factory = await createContractFactory();
+    await using provider = await setupTestProvider();
+    const factory = await createContractFactory(provider);
     const b256 = '0x626f0c36909faecc316056fca8be684ab0cd06afc63247dc008bdf9e433f927a';
 
     const contract = await factory.deployContract({

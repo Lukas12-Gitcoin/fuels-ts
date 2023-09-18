@@ -1,35 +1,26 @@
-import type { Contract, WalletUnlocked } from 'fuels';
 import { BN, ContractFactory } from 'fuels';
 
 import { getSnippetProjectArtifacts, SnippetProjectEnum } from '../../../projects';
 import { getTestWallet } from '../../utils';
 
 describe(__filename, () => {
-  let wallet: WalletUnlocked;
-
-  let simpleToken: Contract;
-  let tokenDepositor: Contract;
-
-  beforeAll(async () => {
-    wallet = await getTestWallet();
-
+  it('should successfully make call to another contract', async () => {
+    await using wallet = await getTestWallet();
     const tokenArtifacts = getSnippetProjectArtifacts(SnippetProjectEnum.SIMPLE_TOKEN);
     const depositorArtifacts = getSnippetProjectArtifacts(SnippetProjectEnum.TOKEN_DEPOSITOR);
 
-    simpleToken = await new ContractFactory(
+    const simpleToken = await new ContractFactory(
       tokenArtifacts.binHexlified,
       tokenArtifacts.abiContents,
       wallet
     ).deployContract();
 
-    tokenDepositor = await new ContractFactory(
+    const tokenDepositor = await new ContractFactory(
       depositorArtifacts.binHexlified,
       depositorArtifacts.abiContents,
       wallet
     ).deployContract();
-  });
 
-  it('should successfully make call to another contract', async () => {
     // #region inter-contract-calls-3
     const amountToDeposit = 70;
 

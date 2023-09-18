@@ -1,28 +1,20 @@
-import type { AbstractAddress, WalletUnlocked } from 'fuels';
 import { ContractFactory, Contract } from 'fuels';
 
 import { SnippetProjectEnum, getSnippetProjectArtifacts } from '../../../projects';
 import { getTestWallet } from '../../utils';
 
 describe(__filename, () => {
-  let contract: Contract;
-  let contractId: AbstractAddress;
-  let wallet: WalletUnlocked;
   const { abiContents: abi, binHexlified: bin } = getSnippetProjectArtifacts(
     SnippetProjectEnum.ECHO_VALUES
   );
 
-  beforeAll(async () => {
-    wallet = await getTestWallet();
-
+  it('should successfully interact with a deployed contract', async () => {
+    await using wallet = await getTestWallet();
     const factory = new ContractFactory(bin, abi, wallet);
 
-    contract = await factory.deployContract();
+    const contract = await factory.deployContract();
 
-    contractId = contract.id;
-  });
-
-  it('should successfully interact with a deployed contract', async () => {
+    const contractId = contract.id;
     // #region managing-deployed-contracts-1
     const deployedContract = new Contract(contractId, abi, wallet);
 
@@ -33,6 +25,11 @@ describe(__filename, () => {
   });
 
   it('should successfully interact with a deployed contract [hexed contract id]', async () => {
+    await using wallet = await getTestWallet();
+    const factory = new ContractFactory(bin, abi, wallet);
+
+    const contract = await factory.deployContract();
+
     const b256 = contract.id.toB256();
 
     // #region managing-deployed-contracts-2

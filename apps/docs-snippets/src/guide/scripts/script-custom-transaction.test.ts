@@ -1,21 +1,18 @@
-import {
-  BN,
-  ContractFactory,
-  BaseAssetId,
-  ScriptTransactionRequest} from 'fuels';
-import type { CoinQuantityLike, Contract ,
-  type WalletUnlocked,
-} from 'fuels';
+import { BN, ContractFactory, BaseAssetId, ScriptTransactionRequest } from 'fuels';
+import type { CoinQuantityLike } from 'fuels';
 
 import { SnippetProjectEnum, getSnippetProjectArtifacts } from '../../../projects';
 import { defaultTxParams, getTestWallet } from '../../utils';
 
 describe(__filename, () => {
-  let wallet: WalletUnlocked;
-  let contract: Contract;
-
   const assetIdB = '0x0101010101010101010101010101010101010101010101010101010101010101';
   const assetIdA = '0x0202020202020202020202020202020202020202020202020202020202020202';
+
+  const seedQuantities: CoinQuantityLike[] = [
+    [1000, assetIdA],
+    [500, assetIdB],
+    [1000, BaseAssetId],
+  ];
 
   const { binHexlified: scriptBin, abiContents } = getSnippetProjectArtifacts(
     SnippetProjectEnum.SCRIPT_TRANSFER_TO_CONTRACT
@@ -25,21 +22,13 @@ describe(__filename, () => {
     SnippetProjectEnum.ECHO_VALUES
   );
 
-  beforeAll(async () => {
-    const seedQuantities: CoinQuantityLike[] = [
-      [1000, assetIdA],
-      [500, assetIdB],
-      [1000, BaseAssetId],
-    ];
-
-    wallet = await getTestWallet(seedQuantities);
+  it('transfer multiple assets to a contract', async () => {
+    await using wallet = await getTestWallet(seedQuantities);
 
     const factory = new ContractFactory(contractBin, contractAbi, wallet);
 
-    contract = await factory.deployContract();
-  });
+    const contract = await factory.deployContract();
 
-  it('transfer multiple assets to a contract', async () => {
     const contractInitialBalanceAssetA = await contract.getBalance(assetIdA);
     const contractInitialBalanceAssetB = await contract.getBalance(assetIdB);
 

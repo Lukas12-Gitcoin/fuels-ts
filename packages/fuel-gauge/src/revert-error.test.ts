@@ -1,3 +1,4 @@
+import { setupTestProvider } from '@fuel-ts/providers/test-utils';
 import { generateTestWallet } from '@fuel-ts/wallet/test-utils';
 import fs from 'fs';
 import type { Contract, WalletUnlocked } from 'fuels';
@@ -9,7 +10,6 @@ import {
   TransferToAddressRevertError,
   bn,
   ContractFactory,
-  Provider,
   BaseAssetId,
 } from 'fuels';
 import path from 'path';
@@ -21,7 +21,7 @@ let wallet: WalletUnlocked;
 
 describe('Revert Error Testing', () => {
   beforeAll(async () => {
-    const provider = await Provider.connect('http://127.0.0.1:4000/graphql');
+    await using provider = await setupTestProvider();
     wallet = await generateTestWallet(provider, [[1_000, BaseAssetId]]);
 
     const bytecode = fs.readFileSync(

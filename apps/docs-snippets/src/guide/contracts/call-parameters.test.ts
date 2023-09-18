@@ -1,17 +1,13 @@
-import type { Contract } from 'fuels';
 import { BN, BaseAssetId } from 'fuels';
 
 import { SnippetProjectEnum } from '../../../projects';
 import { createAndDeployContractFromProject } from '../../utils';
 
 describe(__filename, () => {
-  let contract: Contract;
-
-  beforeAll(async () => {
-    contract = await createAndDeployContractFromProject(SnippetProjectEnum.RETURN_CONTEXT);
-  });
-
   it('should successfully execute contract call with forwarded amount', async () => {
+    await using contract = await createAndDeployContractFromProject(
+      SnippetProjectEnum.RETURN_CONTEXT
+    );
     // #region call-params-1
     const amountToForward = 10;
 
@@ -27,6 +23,9 @@ describe(__filename, () => {
   });
 
   it('should throw error due not enough gas', async () => {
+    await using contract = await createAndDeployContractFromProject(
+      SnippetProjectEnum.RETURN_CONTEXT
+    );
     // #region call-params-2
     await expect(
       contract.functions
@@ -41,6 +40,9 @@ describe(__filename, () => {
   });
 
   it('should successfully execute transaction with `txParams` and `callParams`', async () => {
+    await using contract = await createAndDeployContractFromProject(
+      SnippetProjectEnum.RETURN_CONTEXT
+    );
     // #region call-params-3
     const amountToForward = 10;
     const contractCallGasLimit = 100;

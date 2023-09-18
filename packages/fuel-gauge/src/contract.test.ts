@@ -1,5 +1,6 @@
 import { ErrorCode, FuelError } from '@fuel-ts/errors';
 import { expectToThrowFuelError } from '@fuel-ts/errors/test-utils';
+import { setupTestProvider } from '@fuel-ts/providers/test-utils';
 import { generateTestWallet, seedTestWallet } from '@fuel-ts/wallet/test-utils';
 import { readFileSync } from 'fs';
 import type { TransactionRequestLike, TransactionResponse, TransactionType, JsonAbi } from 'fuels';
@@ -18,7 +19,6 @@ import {
   ContractFactory,
   ZeroBytes32,
   BaseAssetId,
-  FUEL_NETWORK_URL,
   Predicate,
 } from 'fuels';
 import { join } from 'path';
@@ -160,7 +160,7 @@ const AltToken = '0x010101010101010101010101010101010101010101010101010101010101
 
 describe('Contract', () => {
   it('generates function methods on a simple contract', async () => {
-    const provider = await Provider.connect('http://127.0.0.1:4000/graphql');
+    await using provider = await setupTestProvider();
     const spy = jest.spyOn(provider, 'sendTransaction');
     const wallet = await generateTestWallet(provider, [[1_000, BaseAssetId]]);
     const contract = new Contract(ZeroBytes32, jsonFragment, wallet);
@@ -178,7 +178,7 @@ describe('Contract', () => {
   });
 
   it('generates function methods on a complex contract', async () => {
-    const provider = await Provider.connect('http://127.0.0.1:4000/graphql');
+    await using provider = await setupTestProvider();
     const spy = jest.spyOn(provider, 'sendTransaction');
     const wallet = await generateTestWallet(provider, [[1_000, BaseAssetId]]);
     const contract = new Contract(ZeroBytes32, complexFragment, wallet);
@@ -199,14 +199,15 @@ describe('Contract', () => {
   });
 
   it('assigns a provider if passed', async () => {
-    const provider = await Provider.connect('http://127.0.0.1:4000/graphql');
+    await using provider = await setupTestProvider();
     const contract = new Contract(getRandomB256(), jsonFragment, provider);
 
     expect(contract.provider).toEqual(provider);
   });
 
   it('should fail to execute call if gasLimit is too low', async () => {
-    const contract = await setupContract();
+    await using provider = await setupTestProvider();
+    const contract = await setupContract(provider);
 
     let failed;
     try {
@@ -224,8 +225,9 @@ describe('Contract', () => {
   });
 
   it('adds multiple contracts on invocation', async () => {
-    const contract = await setupContract();
-    const otherContract = await setupContract({
+    await using provider = await setupTestProvider();
+    const contract = await setupContract(provider);
+    const otherContract = await setupContract(provider, {
       cache: false,
     });
 
@@ -237,8 +239,9 @@ describe('Contract', () => {
   });
 
   it('adds multiple contracts on multicalls', async () => {
-    const contract = await setupContract();
-    const otherContract = await setupContract({
+    await using provider = await setupTestProvider();
+    const contract = await setupContract(provider);
+    const otherContract = await setupContract(provider, {
       cache: false,
     });
     const calls = [
@@ -263,8 +266,8 @@ describe('Contract', () => {
   });
 
   it('submits multiple calls', async () => {
-    const contract = await setupContract();
-
+    await using provider = await setupTestProvider();
+    const contract = await setupContract(provider);
     const { value: results } = await contract
       .multiCall([contract.functions.foo(1336), contract.functions.foo(1336)])
       .call();
@@ -272,8 +275,8 @@ describe('Contract', () => {
   });
 
   it('submits multiple calls, six calls', async () => {
-    const contract = await setupContract();
-
+    await using provider = await setupTestProvider();
+    const contract = await setupContract(provider);
     const { value: results } = await contract
       .multiCall([
         contract.functions.foo(1336),
@@ -291,8 +294,8 @@ describe('Contract', () => {
   });
 
   it('submits multiple calls, eight calls', async () => {
-    const contract = await setupContract();
-
+    await using provider = await setupTestProvider();
+    const contract = await setupContract(provider);
     const { value: results } = await contract
       .multiCall([
         contract.functions.foo(1336),
@@ -320,8 +323,8 @@ describe('Contract', () => {
   });
 
   it('should fail to execute multiple calls if gasLimit is too low', async () => {
-    const contract = await setupContract();
-
+    await using provider = await setupTestProvider();
+    const contract = await setupContract(provider);
     let failed;
     try {
       await contract
@@ -338,8 +341,9 @@ describe('Contract', () => {
   });
 
   it('adds multiple contracts on multicalls', async () => {
-    const contract = await setupContract();
-    const otherContract = await setupContract({ cache: false });
+    await using provider = await setupTestProvider();
+    const contract = await setupContract(provider);
+    const otherContract = await setupContract(provider, { cache: false });
 
     const scope = contract.multiCall([contract.functions.foo(1336)]).addContracts([otherContract]);
 
@@ -358,8 +362,8 @@ describe('Contract', () => {
   });
 
   it('dryRuns multiple calls', async () => {
-    const contract = await setupContract();
-
+    await using provider = await setupTestProvider();
+    const contract = await setupContract(provider);
     const { value: results } = await contract
       .multiCall([contract.functions.foo(1336), contract.functions.foo(1336)])
       .simulate();
@@ -367,8 +371,8 @@ describe('Contract', () => {
   });
 
   it('simulates multiple calls', async () => {
-    const contract = await setupContract();
-
+    await using provider = await setupTestProvider();
+    const contract = await setupContract(provider);
     const { value, callResult, gasUsed } = await contract
       .multiCall([contract.functions.foo(1336), contract.functions.foo(1336)])
       .simulate();
@@ -378,8 +382,8 @@ describe('Contract', () => {
   });
 
   it('Returns gasUsed and transactionId', async () => {
-    const contract = await setupContract();
-
+    await using provider = await setupTestProvider();
+    const contract = await setupContract(provider);
     const { transactionId, gasUsed } = await contract
       .multiCall([contract.functions.foo(1336), contract.functions.foo(1336)])
       .call();
@@ -388,7 +392,8 @@ describe('Contract', () => {
   });
 
   it('Single call with forwarding a alt token', async () => {
-    const contract = await setupContract();
+    await using provider = await setupTestProvider();
+    const contract = await setupContract(provider);
     const { value } = await contract.functions
       .return_context_amount()
       .callParams({
@@ -404,8 +409,8 @@ describe('Contract', () => {
   });
 
   it('MultiCall with multiple forwarding', async () => {
-    const contract = await setupContract();
-
+    await using provider = await setupTestProvider();
+    const contract = await setupContract(provider);
     const { value } = await contract
       .multiCall([
         contract.functions.return_context_amount().callParams({
@@ -427,8 +432,8 @@ describe('Contract', () => {
   });
 
   it('Check if gas per call is lower than transaction', async () => {
-    const contract = await setupContract();
-
+    await using provider = await setupTestProvider();
+    const contract = await setupContract(provider);
     await expect(
       contract
         .multiCall([
@@ -452,8 +457,8 @@ describe('Contract', () => {
   });
 
   it('can forward gas to multicall calls', async () => {
-    const contract = await setupContract();
-
+    await using provider = await setupTestProvider();
+    const contract = await setupContract(provider);
     const { value } = await contract
       .multiCall([
         contract.functions.return_context_gas().callParams({
@@ -481,8 +486,8 @@ describe('Contract', () => {
   });
 
   it('Get transaction cost', async () => {
-    const contract = await setupContract();
-
+    await using provider = await setupTestProvider();
+    const contract = await setupContract(provider);
     const invocationScope = contract.multiCall([
       contract.functions.return_context_amount().callParams({
         forward: [100, BaseAssetId],
@@ -508,7 +513,8 @@ describe('Contract', () => {
   });
 
   it('Get transaction cost with gasPrice 1', async () => {
-    const contract = await setupContract();
+    await using provider = await setupTestProvider();
+    const contract = await setupContract(provider);
     const invocationScope = contract
       .multiCall([
         contract.functions.return_context_amount().callParams({
@@ -542,8 +548,8 @@ describe('Contract', () => {
   });
 
   it('Get transaction cost with gasPrice 2', async () => {
-    const contract = await setupContract();
-
+    await using provider = await setupTestProvider();
+    const contract = await setupContract(provider);
     const invocationScope = contract.multiCall([
       contract.functions.return_context_amount().callParams({
         forward: [100, BaseAssetId],
@@ -575,8 +581,8 @@ describe('Contract', () => {
   });
 
   it('Fail before submit if gasLimit is lower than gasUsed', async () => {
-    const contract = await setupContract();
-
+    await using provider = await setupTestProvider();
+    const contract = await setupContract(provider);
     const invocationScope = contract.functions.return_context_amount().callParams({
       forward: [100, BaseAssetId],
     });
@@ -595,8 +601,8 @@ describe('Contract', () => {
   });
 
   it('calls array functions', async () => {
-    const contract = await setupContract();
-
+    await using provider = await setupTestProvider();
+    const contract = await setupContract(provider);
     const { value: arrayBoolean } = await contract.functions
       .take_array_boolean([true, false, false])
       .call();
@@ -627,8 +633,8 @@ describe('Contract', () => {
   });
 
   it('calls enum functions', async () => {
-    const contract = await setupContract();
-
+    await using provider = await setupTestProvider();
+    const contract = await setupContract(provider);
     const { value: enumB256ReturnValue } = await contract.functions
       .take_b256_enum({
         Value: '0xd5579c46dfcc7f18207013e65b44e4cb4e2c2298f4ac457ba8f82743f31e930b',
@@ -683,7 +689,8 @@ describe('Contract', () => {
   });
 
   it('dryRun and get should not validate the signature', async () => {
-    const contract = await setupContract();
+    await using provider = await setupTestProvider();
+    const contract = await setupContract(provider);
     const { value } = await contract
       .multiCall([
         contract.functions.return_context_amount().callParams({
@@ -698,8 +705,8 @@ describe('Contract', () => {
   });
 
   it('Parse TX to JSON and parse back to TX', async () => {
-    const contract = await setupContract();
-
+    await using provider = await setupTestProvider();
+    const contract = await setupContract(provider);
     const num = 1337;
     const struct = { a: true, b: 1337 };
     const invocationScopes = [contract.functions.foo(num), contract.functions.boo(struct)];
@@ -724,7 +731,7 @@ describe('Contract', () => {
   });
 
   it('Parse create TX to JSON and parse back to create TX', async () => {
-    const provider = await Provider.connect(FUEL_NETWORK_URL);
+    await using provider = await setupTestProvider();
     const wallet = Wallet.generate({
       provider,
     });
@@ -751,8 +758,8 @@ describe('Contract', () => {
   });
 
   it('Provide a custom provider and public wallet to the contract instance', async () => {
-    const contract = await setupContract();
-    const provider = await Provider.connect(FUEL_NETWORK_URL);
+    await using provider = await setupTestProvider();
+    const contract = await setupContract(provider);
     const externalWallet = Wallet.generate({
       provider,
     });
@@ -821,7 +828,7 @@ describe('Contract', () => {
   });
 
   it('should ensure multicall does not allow multiple calls that return heap types', async () => {
-    const provider = await Provider.connect(FUEL_NETWORK_URL);
+    await using provider = await setupTestProvider();
     const wallet = Wallet.generate({
       provider,
     });
@@ -853,7 +860,7 @@ describe('Contract', () => {
   });
 
   it('should ensure multicall only allows calls that return a heap type on last position', async () => {
-    const provider = await Provider.connect(FUEL_NETWORK_URL);
+    await using provider = await setupTestProvider();
     const wallet = Wallet.generate({
       provider,
     });
@@ -882,7 +889,8 @@ describe('Contract', () => {
   });
 
   it('Read only call', async () => {
-    const contract = await setupContract();
+    await using provider = await setupTestProvider();
+    const contract = await setupContract(provider);
     const { value } = await contract.functions.echo_b256(contract.id.toB256()).simulate();
     expect(value).toEqual(contract.id.toB256());
   });
@@ -894,10 +902,9 @@ describe('Contract', () => {
    * to move them to another test suite when addressing https://github.com/FuelLabs/fuels-ts/issues/1043.
    */
   it('should tranfer asset to a deployed contract just fine (NATIVE ASSET)', async () => {
-    const provider = await Provider.connect(FUEL_NETWORK_URL);
+    await using provider = await setupTestProvider();
     const wallet = await generateTestWallet(provider, [[500, BaseAssetId]]);
-
-    const contract = await setupContract();
+    const contract = await setupContract(provider);
 
     const initialBalance = new BN(await contract.getBalance(BaseAssetId)).toNumber();
 
@@ -914,13 +921,13 @@ describe('Contract', () => {
 
   it('should tranfer asset to a deployed contract just fine (NOT NATIVE ASSET)', async () => {
     const asset = '0x0101010101010101010101010101010101010101010101010101010101010101';
-    const provider = await Provider.connect(FUEL_NETWORK_URL);
+    await using provider = await setupTestProvider();
     const wallet = await generateTestWallet(provider, [
       [500, BaseAssetId],
       [200, asset],
     ]);
 
-    const contract = await setupContract();
+    const contract = await setupContract(provider);
 
     const initialBalance = new BN(await contract.getBalance(asset)).toNumber();
 
@@ -936,10 +943,10 @@ describe('Contract', () => {
   });
 
   it('should tranfer asset to a deployed contract just fine (FROM PREDICATE)', async () => {
-    const provider = await Provider.connect(FUEL_NETWORK_URL);
+    await using provider = await setupTestProvider();
     const wallet = await generateTestWallet(provider, [[500, BaseAssetId]]);
 
-    const contract = await setupContract();
+    const contract = await setupContract(provider);
 
     const initialBalance = new BN(await contract.getBalance(BaseAssetId)).toNumber();
 
@@ -964,7 +971,8 @@ describe('Contract', () => {
   });
 
   it('should ensure ScriptResultDecoderError works for dryRun and simulate calls', async () => {
-    const contract = await setupContract();
+    await using provider = await setupTestProvider();
+    const contract = await setupContract(provider);
 
     const invocationScope = contract.functions.return_context_amount().callParams({
       forward: [100, BaseAssetId],

@@ -1,23 +1,19 @@
 import { safeExec } from '@fuel-ts/errors/test-utils';
-import { WalletUnlocked, FUEL_NETWORK_URL, Provider, Predicate, BN, getRandomB256 } from 'fuels';
+import { WalletUnlocked, Predicate, BN, getRandomB256 } from 'fuels';
 
 import { SnippetProjectEnum, getSnippetProjectArtifacts } from '../../../projects';
 import { getTestWallet } from '../../utils';
 
 describe(__filename, () => {
-  let walletWithFunds: WalletUnlocked;
-
   const { abiContents: abi, binHexlified: bin } = getSnippetProjectArtifacts(
     SnippetProjectEnum.SIMPLE_PREDICATE
   );
 
-  beforeAll(async () => {
-    walletWithFunds = await getTestWallet();
-  });
-
   it('should successfully use predicate to spend assets', async () => {
+    await using walletWithFunds: WalletUnlocked = await getTestWallet();
+
     // #region send-and-spend-funds-from-predicates-2
-    const provider = await Provider.connect(FUEL_NETWORK_URL);
+    const provider = walletWithFunds.provider;
     const chainId = await provider.getChainId();
     const predicate = new Predicate(bin, chainId, provider, abi);
     // #endregion send-and-spend-funds-from-predicates-2
@@ -52,7 +48,9 @@ describe(__filename, () => {
   });
 
   it('should fail when trying to spend predicates entire amount', async () => {
-    const provider = await Provider.connect(FUEL_NETWORK_URL);
+    await using walletWithFunds: WalletUnlocked = await getTestWallet();
+    const provider = walletWithFunds.provider;
+
     const predicateOwner = WalletUnlocked.generate({
       provider,
     });
@@ -85,7 +83,9 @@ describe(__filename, () => {
   });
 
   it('should fail when set wrong input data for predicate', async () => {
-    const provider = await Provider.connect(FUEL_NETWORK_URL);
+    await using walletWithFunds: WalletUnlocked = await getTestWallet();
+    const provider = walletWithFunds.provider;
+
     const predicateOwner = WalletUnlocked.generate({
       provider,
     });

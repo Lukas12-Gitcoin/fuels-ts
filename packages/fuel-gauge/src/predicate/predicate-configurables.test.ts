@@ -1,3 +1,4 @@
+import { setupTestProvider } from '@fuel-ts/providers/test-utils';
 import { generateTestWallet } from '@fuel-ts/wallet/test-utils';
 import type { CoinQuantityLike } from 'fuels';
 import { getRandomB256, BaseAssetId, Provider, WalletUnlocked, Predicate } from 'fuels';
@@ -20,7 +21,7 @@ describe('Predicate', () => {
     };
 
     beforeEach(async () => {
-      const provider = await Provider.connect('http://127.0.0.1:4000/graphql');
+      await using provider = await setupTestProvider();
 
       const quantities: CoinQuantityLike[] = [
         {

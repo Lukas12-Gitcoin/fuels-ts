@@ -1,25 +1,11 @@
+import { setupTestProvider } from '@fuel-ts/providers/test-utils';
 import type { Bytes, WalletLocked } from 'fuels';
-import {
-  Wallet,
-  FUEL_NETWORK_URL,
-  Provider,
-  Contract,
-  Address,
-  ZeroBytes32,
-  arrayify,
-  hexlify,
-  randomBytes,
-} from 'fuels';
+import { Wallet, Contract, Address, ZeroBytes32, arrayify, hexlify, randomBytes } from 'fuels';
 
 import { getSnippetProjectArtifacts, SnippetProjectEnum } from '../../../projects';
 
 describe(__filename, () => {
   const { abiContents: abi } = getSnippetProjectArtifacts(SnippetProjectEnum.ECHO_VALUES);
-  let provider: Provider;
-
-  beforeAll(async () => {
-    provider = await Provider.connect(FUEL_NETWORK_URL);
-  });
 
   it('should successfully convert between b256 and bytes32', () => {
     // #region conversion-1
@@ -37,9 +23,10 @@ describe(__filename, () => {
     // #endregion conversion-1
   });
 
-  it('should successfully validate contract id equality', () => {
+  it('should successfully validate contract id equality', async () => {
     // #region conversion-2
     // #context import { FUEL_NETWORK_URL } from 'fuels';
+    await using provider = await setupTestProvider();
 
     const address = Address.fromRandom();
 
@@ -49,8 +36,10 @@ describe(__filename, () => {
     // #endregion conversion-2
   });
 
-  it('should successfully validate a wallet address equality', () => {
+  it('should successfully validate a wallet address equality', async () => {
     // #region conversion-3
+    await using provider = await setupTestProvider();
+
     const address = Address.fromRandom();
 
     const wallet: WalletLocked = Wallet.fromAddress(address, provider);

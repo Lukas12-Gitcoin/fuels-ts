@@ -1,3 +1,4 @@
+import { setupTestProvider } from '@fuel-ts/providers/test-utils';
 import { Address, FUEL_NETWORK_URL, Provider, Wallet } from 'fuels';
 
 describe(__filename, () => {
@@ -13,7 +14,7 @@ describe(__filename, () => {
   });
 
   it('should successfully generate new address instance from public key', async () => {
-    const provider = await Provider.connect(FUEL_NETWORK_URL);
+    await using provider = await setupTestProvider();
     // #region address-3
     const wallet = Wallet.generate({
       provider,

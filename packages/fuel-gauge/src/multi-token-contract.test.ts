@@ -1,13 +1,13 @@
+import { setupTestProvider } from '@fuel-ts/providers/test-utils';
 import { generateTestWallet } from '@fuel-ts/wallet/test-utils';
 import { readFileSync } from 'fs';
-import type { BN } from 'fuels';
-import { Provider, Wallet, ContractFactory, bn, BaseAssetId, FUEL_NETWORK_URL } from 'fuels';
+import type { BN, Provider } from 'fuels';
+import { Wallet, ContractFactory, bn, BaseAssetId } from 'fuels';
 import { join } from 'path';
 
 import abi from '../fixtures/forc-projects/multi-token-contract/out/debug/multi-token-contract-abi.json';
 
-const setup = async () => {
-  const provider = await Provider.connect(FUEL_NETWORK_URL);
+const setup = async (provider: Provider) => {
   // Create wallet
   const wallet = await generateTestWallet(provider, [[1_000, BaseAssetId]]);
 
@@ -33,10 +33,10 @@ const subIds = [
 
 describe('MultiTokenContract', () => {
   it('can mint and transfer coins', async () => {
-    const provider = await Provider.connect(FUEL_NETWORK_URL);
+    await using provider = await setupTestProvider();
     // New wallet to transfer coins and check balance
     const userWallet = Wallet.generate({ provider });
-    const multiTokenContract = await setup();
+    const multiTokenContract = await setup(provider);
     const contractId = { value: multiTokenContract.id.toB256() };
 
     const helperDict: { [key: string]: { assetId: string; amount: number } } = {
@@ -108,7 +108,8 @@ describe('MultiTokenContract', () => {
   });
 
   it('can burn coins', async () => {
-    const multiTokenContract = await setup();
+    await using provider = await setupTestProvider();
+    const multiTokenContract = await setup(provider);
     const contractId = { value: multiTokenContract.id.toB256() };
 
     const helperDict: {

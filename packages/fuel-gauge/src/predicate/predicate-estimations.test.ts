@@ -1,14 +1,7 @@
+import { setupTestProvider } from '@fuel-ts/providers/test-utils';
 import { seedTestWallet } from '@fuel-ts/wallet/test-utils';
-import type { CoinTransactionRequestInput, MessageTransactionRequestInput } from 'fuels';
-import {
-  BaseAssetId,
-  Provider,
-  Predicate,
-  bn,
-  ScriptTransactionRequest,
-  InputType,
-  FUEL_NETWORK_URL,
-} from 'fuels';
+import type { CoinTransactionRequestInput, MessageTransactionRequestInput, Provider } from 'fuels';
+import { BaseAssetId, Predicate, bn, ScriptTransactionRequest, InputType } from 'fuels';
 
 import predicateBytesMainArgsStruct from '../../fixtures/forc-projects/predicate-main-args-struct';
 import predicateAbiMainArgsStruct from '../../fixtures/forc-projects/predicate-main-args-struct/out/debug/predicate-main-args-struct-abi.json';
@@ -17,15 +10,15 @@ import type { Validation } from '../types/predicate';
 
 describe('Predicate', () => {
   describe('Estimate predicate gas', () => {
-    let provider: Provider;
-    let predicateTrue: Predicate<[]>;
-    let predicateStruct: Predicate<[Validation]>;
-
-    beforeEach(async () => {
-      provider = await Provider.connect(FUEL_NETWORK_URL);
+    const getPredicateTrue = async (provider: Provider) => {
       const chainId = await provider.getChainId();
-      predicateTrue = new Predicate(predicateTrueBytecode, chainId, provider);
-      predicateStruct = new Predicate<[Validation]>(
+      return new Predicate(predicateTrueBytecode, chainId, provider);
+    };
+
+    const getPredicateStruct = async (provider: Provider) => {
+      const chainId = await provider.getChainId();
+
+      const predicateStruct = new Predicate<[Validation]>(
         predicateBytesMainArgsStruct,
         chainId,
         provider,
@@ -37,9 +30,14 @@ describe('Predicate', () => {
           amount: bn(1000),
         },
       ]);
-    });
+      return predicateStruct;
+    };
 
     it('estimatePredicates should assign gas to the correct input', async () => {
+      await using provider = await setupTestProvider();
+      const predicateStruct = await getPredicateStruct(provider);
+      const predicateTrue = await getPredicateTrue(provider);
+
       const tx = new ScriptTransactionRequest();
 
       // Get resources from the predicate struct

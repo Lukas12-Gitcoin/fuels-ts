@@ -1,7 +1,8 @@
-import { Provider, fromTai64ToUnix } from 'fuels';
+import { setupTestProvider } from '@fuel-ts/providers/test-utils';
+import { fromTai64ToUnix } from 'fuels';
 
 test('produceBlocks with custom timestamp docs snippet', async () => {
-  const provider = await Provider.connect('http://127.0.0.1:4000/graphql');
+  await using provider = await setupTestProvider();
   const latestBlock = await provider.getBlock('latest');
   if (!latestBlock) {
     throw new Error('No latest block');

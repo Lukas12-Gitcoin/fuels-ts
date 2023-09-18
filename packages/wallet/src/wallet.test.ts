@@ -3,6 +3,7 @@ import { safeExec } from '@fuel-ts/errors/test-utils';
 import { bn } from '@fuel-ts/math';
 import type { TransactionRequestLike, TransactionResponse } from '@fuel-ts/providers';
 import { transactionRequestify, Provider } from '@fuel-ts/providers';
+import { setupTestProvider } from '@fuel-ts/providers/test-utils';
 
 import { FUEL_NETWORK_URL } from './configs';
 import { generateTestWallet } from './test-utils/generateTestWallet';
@@ -10,41 +11,51 @@ import { Wallet } from './wallet';
 import { WalletUnlocked } from './wallets';
 
 describe('Wallet', () => {
-  let wallet: WalletUnlocked;
-  let provider: Provider;
-
-  beforeAll(async () => {
-    provider = await Provider.connect(FUEL_NETWORK_URL);
-    wallet = Wallet.generate({
+  it('Instantiate a new wallet', async () => {
+    await using provider = await setupTestProvider();
+    const wallet = Wallet.generate({
       provider,
     });
-  });
 
-  it('Instantiate a new wallet', () => {
     const lockedWallet = Wallet.fromAddress(wallet.address, provider);
     expect(lockedWallet.address).toEqual(wallet.address);
   });
 
-  it('Create a locked wallet', () => {
+  it('Create a locked wallet', async () => {
+    await using provider = await setupTestProvider();
+    const wallet = Wallet.generate({
+      provider,
+    });
     const lockedWallet = Wallet.fromAddress(wallet.address, provider);
     expect(lockedWallet.address).toEqual(wallet.address);
   });
 
-  it('Unlock a locked wallet', () => {
+  it('Unlock a locked wallet', async () => {
+    await using provider = await setupTestProvider();
+    const wallet = Wallet.generate({
+      provider,
+    });
+
     const lockedWallet = Wallet.fromAddress(wallet.address, provider);
     const unlockedWallet = lockedWallet.unlock(wallet.privateKey);
     expect(unlockedWallet.address).toEqual(lockedWallet.address);
     expect(unlockedWallet.privateKey).toEqual(wallet.privateKey);
   });
 
-  it('Create from privateKey', () => {
+  it('Create from privateKey', async () => {
+    await using provider = await setupTestProvider();
+    const wallet = Wallet.generate({
+      provider,
+    });
     const unlockedWallet = Wallet.fromPrivateKey(wallet.privateKey, provider);
     expect(unlockedWallet.address).toStrictEqual(wallet.address);
     expect(unlockedWallet.privateKey).toEqual(wallet.privateKey);
   });
 
   it('encrypts and decrypts a JSON wallet', async () => {
-    wallet = WalletUnlocked.generate({
+    await using provider = await setupTestProvider();
+
+    const wallet = WalletUnlocked.generate({
       provider,
     });
     const password = 'password';
@@ -58,9 +69,11 @@ describe('Wallet', () => {
   });
 
   it('Should fail to decrypt JSON wallet for a given wrong password', async () => {
-    wallet = WalletUnlocked.generate({
+    await using provider = await setupTestProvider();
+    const wallet = WalletUnlocked.generate({
       provider,
     });
+
     const password = 'password';
     const jsonWallet = await wallet.encrypt(password);
 
@@ -75,6 +88,8 @@ describe('Wallet', () => {
   });
 
   it('Provide a custom provider on a public wallet to the contract instance', async () => {
+    await using provider = await setupTestProvider();
+
     const externalWallet = await generateTestWallet(provider, [
       {
         amount: bn(1_000_000_000),

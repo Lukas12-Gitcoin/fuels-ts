@@ -1,7 +1,7 @@
+import { setupTestProvider } from '@fuel-ts/providers/test-utils';
 import { generateTestWallet } from '@fuel-ts/wallet/test-utils';
 import { readFileSync } from 'fs';
-import type { WalletUnlocked } from 'fuels';
-import { BaseAssetId, ContractFactory, toNumber, Contract, Provider, Predicate } from 'fuels';
+import { BaseAssetId, ContractFactory, toNumber, Contract, Predicate } from 'fuels';
 import { join } from 'path';
 
 import contractAbi from '../../fixtures/forc-projects/call-test-contract/out/debug/call-test-abi.json';
@@ -23,23 +23,16 @@ const liquidityPoolBytes = readFileSync(
 
 describe('Predicate', () => {
   describe('With Contract', () => {
-    let wallet: WalletUnlocked;
-    let receiver: WalletUnlocked;
-    let provider: Provider;
-
-    beforeEach(async () => {
-      provider = await Provider.connect('http://127.0.0.1:4000/graphql');
-      wallet = await generateTestWallet(provider, [[1_000_000, BaseAssetId]]);
-      receiver = await generateTestWallet(provider);
-    });
-
     it('calls a predicate from a contract function', async () => {
+      await using provider = await setupTestProvider({ cacheUtxo: 10 });
+      const wallet = await generateTestWallet(provider, [[1_000_000, BaseAssetId]]);
+
       const setupContract = setupContractWithConfig({
         contractBytecode: contractBytes,
         abi: contractAbi,
         cache: true,
       });
-      const contract = await setupContract();
+      const contract = await setupContract(provider);
       const amountToPredicate = 100_000;
       const chainId = await wallet.provider.getChainId();
       const predicate = new Predicate<[Validation]>(
@@ -66,6 +59,9 @@ describe('Predicate', () => {
     });
 
     it('calls a predicate and uses proceeds for a contract call', async () => {
+      await using provider = await setupTestProvider();
+      const wallet = await generateTestWallet(provider, [[1_000_000, BaseAssetId]]);
+      const receiver = await generateTestWallet(provider);
       const initialReceiverBalance = toNumber(await receiver.getBalance());
 
       const contract = await new ContractFactory(

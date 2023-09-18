@@ -1,5 +1,5 @@
 import { setupTestProvider } from '@fuel-ts/providers/test-utils';
-import type { CoinQuantityLike, Contract } from 'fuels';
+import type { CoinQuantityLike, Contract, Provider } from 'fuels';
 import {
   BaseAssetId,
   ScriptTransactionRequest,
@@ -12,12 +12,27 @@ import {
 import type { SnippetProjectEnum } from '../projects';
 import { getSnippetProjectArtifacts } from '../projects';
 
-export const getTestWallet = async (
-  seedQuantities?: CoinQuantityLike[]
-): Promise<WalletUnlocked & Disposable> => {
-  // create a provider using the Fuel network URL
-  const { provider, cleanup } = await setupTestProvider(undefined, false);
+function sleep(time: number) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(true);
+    }, time);
+  });
+}
 
+export const getTestWallet = async <Dispose extends boolean = true>(
+  seedQuantities?: CoinQuantityLike[],
+  runCleanup?: Dispose
+): Promise<
+  Dispose extends true
+    ? WalletUnlocked & AsyncDisposable
+    : { wallet: WalletUnlocked; cleanup: () => void }
+> => {
+  // create a provider using the Fuel network URL
+  const p = await setupTestProvider(undefined, runCleanup);
+
+  const provider = (p as { provider: Provider; cleanup: () => void }).provider ?? p;
+  const cleanup = (p as { cleanup: () => void }).cleanup;
   // instantiate the genesis wallet with its secret key
   const genesisWallet = new WalletUnlocked(process.env.GENESIS_SECRET || '0x01', provider);
 
@@ -55,24 +70,41 @@ export const getTestWallet = async (
   // wait for the transaction to be confirmed
   await response.wait();
 
+  const dispose = runCleanup ?? true;
   // return the test wallet
-  return Object.assign(testWallet, {
-    [Symbol.dispose]() {
-      cleanup();
-    },
-  });
+  // @ts-expect-error ASDF
+  return dispose
+    ? Object.assign(testWallet, {
+        async [Symbol.asyncDispose]() {
+          cleanup();
+          await sleep(2500);
+        },
+      })
+    : {
+        wallet: testWallet,
+        cleanup,
+      };
 };
 
 export const createAndDeployContractFromProject = async (
   project: SnippetProjectEnum
-): Promise<Contract> => {
-  const wallet = await getTestWallet();
+): Promise<Contract & AsyncDisposable> => {
+  const { wallet, cleanup } = await getTestWallet(undefined, false);
   const { abiContents, binHexlified, storageSlots } = getSnippetProjectArtifacts(project);
 
   const contractFactory = new ContractFactory(binHexlified, abiContents, wallet);
-
-  return contractFactory.deployContract({
+  const contract = await contractFactory.deployContract({
     storageSlots,
+  });
+
+  return Object.assign(contract, {
+    [Symbol.dispose]() {
+      cleanup();
+    },
+    async [Symbol.asyncDispose]() {
+      cleanup();
+      await sleep(2500);
+    },
   });
 };
 

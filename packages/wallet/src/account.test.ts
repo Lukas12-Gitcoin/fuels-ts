@@ -13,6 +13,7 @@ import type {
 } from '@fuel-ts/providers';
 import { Provider } from '@fuel-ts/providers';
 import * as providersMod from '@fuel-ts/providers';
+import { setupTestProvider } from '@fuel-ts/providers/test-utils';
 
 import { Account } from './account';
 import { FUEL_NETWORK_URL } from './configs';
@@ -22,13 +23,7 @@ jest.mock('@fuel-ts/providers', () => ({
   ...jest.requireActual('@fuel-ts/providers'),
 }));
 
-let provider: Provider;
-
 afterEach(jest.restoreAllMocks);
-
-beforeAll(async () => {
-  provider = await Provider.connect(FUEL_NETWORK_URL);
-});
 
 describe('Account', () => {
   const assets = [
@@ -37,7 +32,9 @@ describe('Account', () => {
     '0x0000000000000000000000000000000000000000000000000000000000000000',
   ];
 
-  it('Create wallet using a address', () => {
+  it('Create wallet using a address', async () => {
+    await using provider = await setupTestProvider();
+
     const account = new Account(
       '0x09c0b2d1a486c439a87bcba6b46a7a1a23f3897cc83a94521a96da5c23bc58db',
       provider
@@ -48,6 +45,8 @@ describe('Account', () => {
   });
 
   it('should get coins just fine', async () => {
+    await using provider = await setupTestProvider();
+
     const account = new Account(
       '0x09c0b2d1a486c439a87bcba6b46a7a1a23f3897cc83a94521a96da5c23bc58db',
       provider
@@ -91,6 +90,8 @@ describe('Account', () => {
   });
 
   it('should execute getResourcesToSpend just fine', async () => {
+    await using provider = await setupTestProvider();
+
     // #region Message-getResourcesToSpend
     const account = new Account(
       '0x09c0b2d1a486c439a87bcba6b46a7a1a23f3897cc83a94521a96da5c23bc58db',
@@ -107,6 +108,8 @@ describe('Account', () => {
   });
 
   it('should get messages just fine', async () => {
+    await using provider = await setupTestProvider();
+
     const account = new Account(
       '0x69a2b736b60159b43bb8a4f98c0589f6da5fa3a3d101e8e269c499eb942753ba',
       provider
@@ -145,6 +148,8 @@ describe('Account', () => {
   });
 
   it('should get single asset balance just fine', async () => {
+    await using provider = await setupTestProvider();
+
     const account = new Account(
       '0x09c0b2d1a486c439a87bcba6b46a7a1a23f3897cc83a94521a96da5c23bc58db',
       provider
@@ -156,6 +161,7 @@ describe('Account', () => {
   });
 
   it('should get multiple balances just fine', async () => {
+    await using provider = await setupTestProvider();
     const account = new Account(
       '0x09c0b2d1a486c439a87bcba6b46a7a1a23f3897cc83a94521a96da5c23bc58db',
       provider
@@ -198,6 +204,7 @@ describe('Account', () => {
    * TODO: figure out a way to still test these methods that cover provider URL switching
    */
   it.skip('should connect with provider just fine [INSTANCE]', async () => {
+    await using provider = await setupTestProvider();
     const account = new Account(
       '0x09c0b2d1a486c439a87bcba6b46a7a1a23f3897cc83a94521a96da5c23bc58db',
       provider
@@ -232,6 +239,8 @@ describe('Account', () => {
     const getResourcesToSpendSpy = jest
       .spyOn(Account.prototype, 'getResourcesToSpend')
       .mockImplementationOnce(() => Promise.resolve([]));
+
+    await using provider = await setupTestProvider();
 
     const account = new Account(
       '0x09c0b2d1a486c439a87bcba6b46a7a1a23f3897cc83a94521a96da5c23bc58db',
@@ -286,6 +295,7 @@ describe('Account', () => {
 
     jest.spyOn(providersMod, 'ScriptTransactionRequest').mockImplementation(() => request);
 
+    await using provider = await setupTestProvider();
     const account = new Account(
       '0x09c0b2d1a486c439a87bcba6b46a7a1a23f3897cc83a94521a96da5c23bc58db',
       provider
@@ -368,6 +378,7 @@ describe('Account', () => {
       .spyOn(Account.prototype, 'sendTransaction')
       .mockImplementation(() => Promise.resolve(transactionResponse));
 
+    await using provider = await setupTestProvider();
     const account = new Account(
       '0x09c0b2d1a486c439a87bcba6b46a7a1a23f3897cc83a94521a96da5c23bc58db',
       provider
@@ -426,6 +437,7 @@ describe('Account', () => {
       .spyOn(providersMod.Provider.prototype, 'sendTransaction')
       .mockImplementation(() => Promise.resolve(transactionResponse));
 
+    await using provider = await setupTestProvider();
     const account = new Account(
       '0x09c0b2d1a486c439a87bcba6b46a7a1a23f3897cc83a94521a96da5c23bc58db',
       provider
@@ -462,6 +474,7 @@ describe('Account', () => {
       .spyOn(providersMod.Provider.prototype, 'simulate')
       .mockImplementation(() => Promise.resolve(callResult));
 
+    await using provider = await setupTestProvider();
     const account = new Account(
       '0x09c0b2d1a486c439a87bcba6b46a7a1a23f3897cc83a94521a96da5c23bc58db',
       provider

@@ -1,6 +1,6 @@
+import { setupTestProvider } from '@fuel-ts/providers/test-utils';
 import { generateTestWallet } from '@fuel-ts/wallet/test-utils';
 import type {
-  WalletUnlocked,
   TransactionResultReceipt,
   Operation,
   TransactionSummary,
@@ -8,26 +8,16 @@ import type {
 } from 'fuels';
 import {
   BN,
-  FUEL_NETWORK_URL,
   getTransactionsSummaries,
   getTransactionSummary,
   getTransactionSummaryFromRequest,
   BaseAssetId,
-  Provider,
   ScriptTransactionRequest,
   TransactionTypeName,
   Wallet,
 } from 'fuels';
 
 describe('TransactionSummary', () => {
-  let provider: Provider;
-  let wallet: WalletUnlocked;
-
-  beforeAll(async () => {
-    provider = await Provider.connect(FUEL_NETWORK_URL);
-    wallet = await generateTestWallet(provider, [[2_000, BaseAssetId]]);
-  });
-
   const verifyTransactionSummary = (params: {
     transaction: TransactionResult | TransactionSummary;
     isRequest?: boolean;
@@ -55,6 +45,7 @@ describe('TransactionSummary', () => {
   };
 
   it('should ensure getTransactionSummary executes just fine', async () => {
+    await using provider = await setupTestProvider();
     const destination = Wallet.generate({
       provider,
     });
@@ -68,6 +59,8 @@ describe('TransactionSummary', () => {
     request.addCoinOutput(destination.address, amountToTransfer, BaseAssetId);
 
     const calculatedFee = request.calculateFee();
+
+    const wallet = await generateTestWallet(provider, [[2_000, BaseAssetId]]);
 
     const resources = await wallet.getResourcesToSpend([
       [calculatedFee.amount.add(amountToTransfer), BaseAssetId],
@@ -93,9 +86,12 @@ describe('TransactionSummary', () => {
   });
 
   it('should ensure getTransactionsSummaries executes just fine', async () => {
+    await using provider = await setupTestProvider();
+
     const sender = Wallet.generate({
       provider,
     });
+    const wallet = await generateTestWallet(provider, [[2_000, BaseAssetId]]);
 
     const tx1 = await wallet.transfer(sender.address, 200);
     const transactionResponse1 = await tx1.waitForResult();
@@ -130,6 +126,8 @@ describe('TransactionSummary', () => {
   });
 
   it('should ensure getTransactionSummaryFromRequest executes just fine', async () => {
+    await using provider = await setupTestProvider();
+
     const request = new ScriptTransactionRequest({
       gasLimit: 10000,
       gasPrice: 1,
@@ -137,6 +135,8 @@ describe('TransactionSummary', () => {
     const fee = request.calculateFee();
 
     const amountToTransfer = 100;
+    const wallet = await generateTestWallet(provider, [[2_000, BaseAssetId]]);
+
     const resources = await wallet.getResourcesToSpend([
       [fee.amount.add(amountToTransfer), BaseAssetId],
     ]);

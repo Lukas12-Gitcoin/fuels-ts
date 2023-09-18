@@ -1,6 +1,7 @@
 import { Address } from '@fuel-ts/address';
 import { hashMessage } from '@fuel-ts/hasher';
 import { Provider } from '@fuel-ts/providers';
+import { setupTestProvider } from '@fuel-ts/providers/test-utils';
 import { Signer } from '@fuel-ts/signer';
 import { Wallet } from '@fuel-ts/wallet';
 import { FUEL_NETWORK_URL } from '@fuel-ts/wallet/configs';
@@ -11,12 +12,6 @@ import { WalletManager } from './wallet-manager';
 import WalletManagerSpec from './wallet-manager-spec';
 
 describe('Wallet Manager', () => {
-  let provider: Provider;
-
-  beforeEach(async () => {
-    provider = await Provider.connect(FUEL_NETWORK_URL);
-  });
-
   const setupWallet = async (config: VaultConfig) => {
     // #region wallet-manager-mnemonic
     const walletManager = new WalletManager();
@@ -36,6 +31,8 @@ describe('Wallet Manager', () => {
   };
 
   it('Test lock and unlock wallet', async () => {
+    await using provider = await setupTestProvider();
+
     const { walletManager, password } = await setupWallet({
       type: 'mnemonic',
       secret: WalletManagerSpec.mnemonic,
@@ -60,6 +57,8 @@ describe('Wallet Manager', () => {
   });
 
   it('Create accounts from mnemonic', async () => {
+    await using provider = await setupTestProvider();
+
     const { walletManager, password } = await setupWallet({
       type: 'mnemonic',
       secret: WalletManagerSpec.mnemonic,
@@ -93,6 +92,8 @@ describe('Wallet Manager', () => {
   });
 
   it('Create account with privateKey', async () => {
+    await using provider = await setupTestProvider();
+
     const wallet = Wallet.generate({
       provider,
     });
@@ -108,6 +109,8 @@ describe('Wallet Manager', () => {
   });
 
   it('Test shared storage storage', async () => {
+    await using provider = await setupTestProvider();
+
     const storage = new MemoryStorage();
     const walletManager = new WalletManager({
       storage,
@@ -134,6 +137,8 @@ describe('Wallet Manager', () => {
   });
 
   it('Export privateKey from address from a privateKey vault', async () => {
+    await using provider = await setupTestProvider();
+
     // #region wallet-manager-create
     const walletManager = new WalletManager();
     const password = '0b540281-f87b-49ca-be37-2264c7f260f7';
@@ -157,6 +162,8 @@ describe('Wallet Manager', () => {
   });
 
   it('Return account when adding account to vault', async () => {
+    await using provider = await setupTestProvider();
+
     const walletManager = new WalletManager();
     const password = '0b540281-f87b-49ca-be37-2264c7f260f7';
 
@@ -174,6 +181,8 @@ describe('Wallet Manager', () => {
   });
 
   it('Export privateKey from address from a mnemonic vault', async () => {
+    await using provider = await setupTestProvider();
+
     const { walletManager } = await setupWallet({
       type: 'mnemonic',
       secret: WalletManagerSpec.mnemonic,
@@ -187,6 +196,8 @@ describe('Wallet Manager', () => {
   });
 
   it('Export privateKey from address from a mnemonic vault', async () => {
+    await using provider = await setupTestProvider();
+
     const { walletManager } = await setupWallet({
       type: 'mnemonic',
       secret: WalletManagerSpec.mnemonic,
@@ -202,6 +213,8 @@ describe('Wallet Manager', () => {
   });
 
   it('Test wallet multiple vaults', async () => {
+    await using provider = await setupTestProvider();
+
     const wallet = Wallet.generate({
       provider,
     });
@@ -234,6 +247,8 @@ describe('Wallet Manager', () => {
   });
 
   it('Test asserts on method calls', async () => {
+    await using provider = await setupTestProvider();
+
     const walletManager = new WalletManager();
     const password = '0b540281-f87b-49ca-be37-2264c7f260f7';
 
@@ -274,6 +289,8 @@ describe('Wallet Manager', () => {
   });
 
   it('Test if vault secret can be leaked', async () => {
+    await using provider = await setupTestProvider();
+
     const { walletManager } = await setupWallet({
       type: 'mnemonic',
       secret: WalletManagerSpec.mnemonic,
@@ -285,6 +302,8 @@ describe('Wallet Manager', () => {
   });
 
   it('Create vault with custom name', async () => {
+    await using provider = await setupTestProvider();
+
     const { walletManager } = await setupWallet({
       type: 'mnemonic',
       title: 'My Custom Vault Name',
@@ -303,6 +322,8 @@ describe('Wallet Manager', () => {
   });
 
   it('Get Wallet instance from address', async () => {
+    await using provider = await setupTestProvider();
+
     const { walletManager } = await setupWallet({
       type: 'mnemonic',
       secret: WalletManagerSpec.mnemonic,
@@ -319,6 +340,8 @@ describe('Wallet Manager', () => {
   });
 
   it('Test WalletManager events', async () => {
+    await using provider = await setupTestProvider();
+
     const { walletManager, password } = await setupWallet({
       type: 'mnemonic',
       secret: WalletManagerSpec.mnemonic,
@@ -351,6 +374,8 @@ describe('Wallet Manager', () => {
   });
 
   it('Export mnemonic from vault', async () => {
+    await using provider = await setupTestProvider();
+
     const { walletManager, password } = await setupWallet({
       type: 'mnemonic',
       secret: WalletManagerSpec.mnemonic,
@@ -367,6 +392,8 @@ describe('Wallet Manager', () => {
   });
 
   it('Update manager passphrase', async () => {
+    await using provider = await setupTestProvider();
+
     const { walletManager, password } = await setupWallet({
       type: 'mnemonic',
       secret: WalletManagerSpec.mnemonic,
@@ -384,6 +411,8 @@ describe('Wallet Manager', () => {
   });
 
   it('Update manager passphrase locked wallet', async () => {
+    await using provider = await setupTestProvider();
+
     const { walletManager, password } = await setupWallet({
       type: 'mnemonic',
       secret: WalletManagerSpec.mnemonic,
@@ -400,6 +429,8 @@ describe('Wallet Manager', () => {
   });
 
   it('Wrong password should keep wallet state locked', async () => {
+    await using provider = await setupTestProvider();
+
     const { walletManager } = await setupWallet({
       type: 'mnemonic',
       secret: WalletManagerSpec.mnemonic,

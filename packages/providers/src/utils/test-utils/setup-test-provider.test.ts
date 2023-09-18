@@ -14,12 +14,14 @@ describe('launchTestProvider', () => {
       url = p.url;
       await p.getChain();
     }
-    // Sleep for some time until the process is killed
+    // // Sleep for some time until the process is killed
     await sleep(2500);
 
-    const { error } = await safeExec(() => Provider.connect(url));
+    const { error, result } = await safeExec(async () => Provider.connect(url));
 
     const ipAndPort = url.replace('http://', '').replace('/graphql', '');
+
+    expect(result).toBeUndefined();
 
     expect(error).toEqual({
       message: `request to ${url} failed, reason: connect ECONNREFUSED ${ipAndPort}`,

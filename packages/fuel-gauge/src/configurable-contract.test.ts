@@ -1,7 +1,8 @@
+import { setupTestProvider } from '@fuel-ts/providers/test-utils';
 import { generateTestWallet } from '@fuel-ts/wallet/test-utils';
 import { readFileSync } from 'fs';
-import type { CoinQuantityLike, WalletUnlocked } from 'fuels';
-import { BN, ContractFactory, BaseAssetId, Provider, getRandomB256 } from 'fuels';
+import type { CoinQuantityLike, Provider } from 'fuels';
+import { BN, ContractFactory, BaseAssetId, getRandomB256 } from 'fuels';
 import { join } from 'path';
 
 import contractAbi from '../fixtures/forc-projects/configurable-contract/out/debug/configurable-contract-abi.json';
@@ -35,12 +36,7 @@ const defaultValues = {
 };
 
 describe('Configurable Contract', () => {
-  let wallet: WalletUnlocked;
-  let factory: ContractFactory;
-
-  beforeAll(async () => {
-    const provider = await Provider.connect('http://127.0.0.1:4000/graphql');
-
+  const setup = async (provider: Provider) => {
     const quantities: CoinQuantityLike[] = [
       {
         amount: 1_000_000,
@@ -48,12 +44,19 @@ describe('Configurable Contract', () => {
       },
     ];
 
-    wallet = await generateTestWallet(provider, quantities);
+    const wallet = await generateTestWallet(provider, quantities);
 
-    factory = new ContractFactory(contractBytecode, contractAbi, wallet);
-  });
+    const factory = new ContractFactory(contractBytecode, contractAbi, wallet);
+
+    return { factory };
+  };
+
+  beforeAll(async () => {});
 
   it('should assert default values', async () => {
+    await using provider = await setupTestProvider();
+    const { factory } = await setup(provider);
+
     const contract = await factory.deployContract();
 
     const { value } = await contract.functions.echo_configurables().simulate();
@@ -72,6 +75,9 @@ describe('Configurable Contract', () => {
   });
 
   it('should set configurable constant before deploy contract (U8)', async () => {
+    await using provider = await setupTestProvider();
+    const { factory } = await setup(provider);
+
     const configurableConstants = {
       U8: 99,
     };
@@ -86,6 +92,9 @@ describe('Configurable Contract', () => {
   });
 
   it('should set configurable constant before deploy contract (U16)', async () => {
+    await using provider = await setupTestProvider();
+    const { factory } = await setup(provider);
+
     const configurableConstants = {
       U16: 499,
     };
@@ -100,6 +109,9 @@ describe('Configurable Contract', () => {
   });
 
   it('should set configurable constant before deploy contract (U32)', async () => {
+    await using provider = await setupTestProvider();
+    const { factory } = await setup(provider);
+
     const configurableConstants = {
       U32: 854,
     };
@@ -114,6 +126,9 @@ describe('Configurable Contract', () => {
   });
 
   it('should set configurable constant before deploy contract (U64)', async () => {
+    await using provider = await setupTestProvider();
+    const { factory } = await setup(provider);
+
     const configurableConstants = {
       U64: 999999,
     };
@@ -128,6 +143,9 @@ describe('Configurable Contract', () => {
   });
 
   it('should set configurable constant before deploy contract (BOOL)', async () => {
+    await using provider = await setupTestProvider();
+    const { factory } = await setup(provider);
+
     const configurableConstants = {
       BOOL: false,
     };
@@ -142,6 +160,9 @@ describe('Configurable Contract', () => {
   });
 
   it('should set configurable constant before deploy contract (B256)', async () => {
+    await using provider = await setupTestProvider();
+    const { factory } = await setup(provider);
+
     const configurableConstants = {
       B256: getRandomB256(),
     };
@@ -156,6 +177,9 @@ describe('Configurable Contract', () => {
   });
 
   it('should set configurable constant before deploy contract (ENUM)', async () => {
+    await using provider = await setupTestProvider();
+    const { factory } = await setup(provider);
+
     const configurableConstants = {
       ENUM: 'blue',
     };
@@ -170,6 +194,9 @@ describe('Configurable Contract', () => {
   });
 
   it('should set configurable constant before deploy contract (ARRAY)', async () => {
+    await using provider = await setupTestProvider();
+    const { factory } = await setup(provider);
+
     const configurableConstants = {
       ARRAY: [
         [666, 667],
@@ -187,6 +214,9 @@ describe('Configurable Contract', () => {
   });
 
   it('should set configurable constant before deploy contract (STR_4)', async () => {
+    await using provider = await setupTestProvider();
+    const { factory } = await setup(provider);
+
     const configurableConstants = {
       STR_4: 'leuf',
     };
@@ -201,6 +231,9 @@ describe('Configurable Contract', () => {
   });
 
   it('should set configurable constant before deploy contract (TUPLE)', async () => {
+    await using provider = await setupTestProvider();
+    const { factory } = await setup(provider);
+
     const configurableConstants = {
       TUPLE: [99, true, 'by'],
     };
@@ -215,6 +248,9 @@ describe('Configurable Contract', () => {
   });
 
   it('should set configurable constant before deploy contract (STRUCT)', async () => {
+    await using provider = await setupTestProvider();
+    const { factory } = await setup(provider);
+
     const configurableConstants = {
       STRUCT_1: {
         tag: '007',

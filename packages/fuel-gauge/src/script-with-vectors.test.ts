@@ -1,12 +1,11 @@
+import { setupTestProvider } from '@fuel-ts/providers/test-utils';
 import { generateTestWallet } from '@fuel-ts/wallet/test-utils';
-import type { BigNumberish, BN } from 'fuels';
-import { BaseAssetId, Provider } from 'fuels';
+import type { BigNumberish, BN, Provider } from 'fuels';
+import { BaseAssetId } from 'fuels';
 
 import { getScript } from './utils';
 
-const setup = async (balance = 5_000) => {
-  const provider = await Provider.connect('http://127.0.0.1:4000/graphql');
-
+const setup = async (provider: Provider, balance = 5_000) => {
   // Create wallet
   const wallet = await generateTestWallet(provider, [[balance, BaseAssetId]]);
 
@@ -15,7 +14,8 @@ const setup = async (balance = 5_000) => {
 
 describe('Script With Vectors', () => {
   it('can call script and use main argument [array]', async () => {
-    const wallet = await setup();
+    await using provider = await setupTestProvider();
+    const wallet = await setup(provider);
     const someArray = [1, 100];
     const scriptInstance = getScript<[BigNumberish[]], void>('script-with-array', wallet);
 
@@ -25,7 +25,8 @@ describe('Script With Vectors', () => {
   });
 
   it('can call script and use main argument [vec]', async () => {
-    const wallet = await setup();
+    await using provider = await setupTestProvider();
+    const wallet = await setup(provider);
     const someVec = [7, 2, 1, 5];
     const scriptInstance = getScript<[BigNumberish[]], void>('script-with-vector', wallet);
 
@@ -47,7 +48,8 @@ describe('Script With Vectors', () => {
   });
 
   it('can call script and use main argument [struct in vec in struct in vec in struct in vec]', async () => {
-    const wallet = await setup();
+    await using provider = await setupTestProvider();
+    const wallet = await setup(provider);
 
     const importantDates = [
       {
@@ -87,7 +89,8 @@ describe('Script With Vectors', () => {
   });
 
   it('can call script and use main argument [struct in vec in struct in vec in struct in vec]', async () => {
-    const wallet = await setup();
+    await using provider = await setupTestProvider();
+    const wallet = await setup(provider);
 
     const scores = [24, 56, 43];
 

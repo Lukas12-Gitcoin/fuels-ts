@@ -1,6 +1,7 @@
+import { setupTestProvider } from '@fuel-ts/providers/test-utils';
 import { generateTestWallet } from '@fuel-ts/wallet/test-utils';
-import type { BigNumberish } from 'fuels';
-import { bn, Predicate, Wallet, Address, BaseAssetId, Provider } from 'fuels';
+import type { BigNumberish, Provider } from 'fuels';
+import { bn, Predicate, Wallet, Address, BaseAssetId } from 'fuels';
 
 import predicateVectorTypes from '../fixtures/forc-projects/predicate-vector-types';
 import predicateVectorTypesAbi from '../fixtures/forc-projects/predicate-vector-types/out/debug/predicate-vector-types-abi.json';
@@ -76,9 +77,7 @@ type MainArgs = [
   VecInAStructInAVec, // VEC_IN_A_VEC_IN_A_STRUCT_IN_A_VEC
 ];
 
-const setup = async (balance = 5_000) => {
-  const provider = await Provider.connect('http://127.0.0.1:4000/graphql');
-
+const setup = async (provider: Provider, balance = 5_000) => {
   // Create wallet
   const wallet = await generateTestWallet(provider, [[balance, BaseAssetId]]);
 
@@ -87,8 +86,9 @@ const setup = async (balance = 5_000) => {
 
 describe('Vector Types Validation', () => {
   it('can use supported vector types [vector-types-contract]', async () => {
+    await using provider = await setupTestProvider();
     const setupContract = getSetupContract('vector-types-contract');
-    const contractInstance = await setupContract();
+    const contractInstance = await setupContract(provider);
 
     const { value } = await contractInstance.functions
       .test_all(
@@ -109,7 +109,9 @@ describe('Vector Types Validation', () => {
   });
 
   it('can use supported vector types [vector-types-script]', async () => {
-    const wallet = await setup();
+    await using provider = await setupTestProvider();
+    const wallet = await setup(provider);
+
     const scriptInstance = getScript<MainArgs, BigNumberish>('vector-types-script', wallet);
 
     const { value } = await scriptInstance.functions
@@ -132,7 +134,8 @@ describe('Vector Types Validation', () => {
   });
 
   it('can use supported vector types [predicate-vector-types]', async () => {
-    const wallet = await setup();
+    await using provider = await setupTestProvider();
+    const wallet = await setup(provider);
     const receiver = Wallet.fromAddress(Address.fromRandom(), wallet.provider);
     const chainId = await wallet.provider.getChainId();
     const amountToPredicate = 100;

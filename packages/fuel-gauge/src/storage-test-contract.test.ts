@@ -1,6 +1,8 @@
+import { setupTestProvider } from '@fuel-ts/providers/test-utils';
 import { generateTestWallet } from '@fuel-ts/wallet/test-utils';
 import { readFileSync } from 'fs';
-import { toHex, Provider, ContractFactory, BaseAssetId } from 'fuels';
+import type { Provider } from 'fuels';
+import { toHex, ContractFactory, BaseAssetId } from 'fuels';
 import { join } from 'path';
 
 import abi from '../fixtures/forc-projects/storage-test-contract/out/debug/storage-test-abi.json';
@@ -11,8 +13,7 @@ const binPath = join(
   '../fixtures/forc-projects/storage-test-contract/out/debug/storage-test.bin'
 );
 
-const setup = async () => {
-  const provider = await Provider.connect('http://127.0.0.1:4000/graphql');
+const setup = async (provider: Provider) => {
   // Create wallet
   const wallet = await generateTestWallet(provider, [[1_000, BaseAssetId]]);
 
@@ -32,7 +33,8 @@ const setup = async () => {
 
 describe('StorageTestContract', () => {
   it('can increment counter', async () => {
-    const contract = await setup();
+    await using provider = await setupTestProvider();
+    const contract = await setup(provider);
 
     // Call contract
     const { value: initializeResult } = await contract.functions.initialize_counter(1300).call();
@@ -45,7 +47,7 @@ describe('StorageTestContract', () => {
   });
 
   it('can increment counter - using custom inline storage slots', async () => {
-    const provider = await Provider.connect('http://127.0.0.1:4000/graphql');
+    await using provider = await setupTestProvider();
     const wallet = await generateTestWallet(provider, [[1_000, BaseAssetId]]);
     const bytecode = readFileSync(binPath);
     const factory = new ContractFactory(bytecode, abi, wallet);

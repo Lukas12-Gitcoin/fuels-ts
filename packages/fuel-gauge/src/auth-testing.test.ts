@@ -1,24 +1,15 @@
+import { setupTestProvider } from '@fuel-ts/providers/test-utils';
 import { generateTestWallet } from '@fuel-ts/wallet/test-utils';
 import fs from 'fs';
-import type { Contract, WalletUnlocked } from 'fuels';
-import {
-  AssertFailedRevertError,
-  ContractFactory,
-  BaseAssetId,
-  Provider,
-  getRandomB256,
-} from 'fuels';
+import type { Provider } from 'fuels';
+import { AssertFailedRevertError, ContractFactory, BaseAssetId, getRandomB256 } from 'fuels';
 import path from 'path';
 
 import FactoryAbi from '../fixtures/forc-projects/auth_testing_contract/out/debug/auth_testing_contract-abi.json';
 
-let contractInstance: Contract;
-let wallet: WalletUnlocked;
-
 describe('Auth Testing', () => {
-  beforeAll(async () => {
-    const provider = await Provider.connect('http://127.0.0.1:4000/graphql');
-    wallet = await generateTestWallet(provider, [[1_000, BaseAssetId]]);
+  const setup = async (provider: Provider) => {
+    const wallet = await generateTestWallet(provider, [[1_000, BaseAssetId]]);
 
     const bytecode = fs.readFileSync(
       path.join(
@@ -27,16 +18,24 @@ describe('Auth Testing', () => {
       )
     );
     const factory = new ContractFactory(bytecode, FactoryAbi, wallet);
-    contractInstance = await factory.deployContract();
-  });
+    const contractInstance = await factory.deployContract();
+    return {
+      wallet,
+      contractInstance,
+    };
+  };
 
   it('can get is_caller_external', async () => {
+    await using provider = await setupTestProvider();
+    const { wallet, contractInstance } = await setup(provider);
     const { value } = await contractInstance.functions.is_caller_external().call();
 
     expect(value).toBeTruthy();
   });
 
   it('can check_msg_sender [with correct id]', async () => {
+    await using provider = await setupTestProvider();
+    const { wallet, contractInstance } = await setup(provider);
     const { value } = await contractInstance.functions
       .check_msg_sender({ value: wallet.address.toB256() })
       .call();
@@ -45,6 +44,8 @@ describe('Auth Testing', () => {
   });
 
   it('can check_msg_sender [with incorrect id]', async () => {
+    await using provider = await setupTestProvider();
+    const { contractInstance } = await setup(provider);
     await expect(
       contractInstance.functions.check_msg_sender({ value: getRandomB256() }).call()
     ).rejects.toThrow(AssertFailedRevertError);

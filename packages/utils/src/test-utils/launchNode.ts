@@ -43,21 +43,13 @@ export const launchNode = async ({
 }> =>
   // eslint-disable-next-line no-async-promise-executor
   new Promise(async (resolve) => {
+    process.setMaxListeners(10000);
     // This string is logged by the client when the node has successfully started. We use it to know when to resolve.
     const graphQLStartSubstring = 'Binding GraphQL provider to';
 
     const command = useSystemFuelCore ? 'fuel-core' : './node_modules/.bin/fuels-core';
 
     const ipToUse = ip || '0.0.0.0';
-
-    const portToUse =
-      port ||
-      (
-        await getPortPromise({
-          port: 4000, // tries 4000 first, then 4001, then 4002, etc.
-          stopPort: 5000, // don't try ports above 5000
-        })
-      ).toString();
 
     let chainConfigPathToUse = chainConfigPath;
 
@@ -73,6 +65,14 @@ export const launchNode = async ({
 
       chainConfigPathToUse = tempChainConfigFilePath;
     }
+    const portToUse =
+      port ||
+      (
+        await getPortPromise({
+          port: 4000, // tries 4000 first, then 4001, then 4002, etc.
+          stopPort: 5000, // don't try ports above 5000
+        })
+      ).toString();
 
     const child = spawn(command, [
       'run',
@@ -92,7 +92,6 @@ export const launchNode = async ({
     // Cleanup function where fuel-core is stopped.
     const cleanup = () => {
       kill(Number(child.pid));
-
       // Remove all the listeners we've added.
       child.stdout.removeAllListeners();
       child.stderr.removeAllListeners();

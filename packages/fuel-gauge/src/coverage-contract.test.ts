@@ -1,3 +1,4 @@
+import { setupTestProvider } from '@fuel-ts/providers/test-utils';
 import type { BN, Message, Contract } from 'fuels';
 import {
   arrayify,
@@ -24,12 +25,6 @@ const B512 =
 
 const setupContract = getSetupContract('coverage-contract');
 
-let contractInstance: Contract;
-
-beforeAll(async () => {
-  contractInstance = await setupContract();
-});
-
 enum SmallEnum {
   Empty = 'Empty',
 }
@@ -48,6 +43,9 @@ enum ColorEnumOutput {
 
 describe('Coverage Contract', () => {
   it('can return outputs', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     // Call contract methods
     expect((await contractInstance.functions.get_id().call()).value).toEqual(
       '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
@@ -73,6 +71,9 @@ describe('Coverage Contract', () => {
   });
 
   it('should test u8 variable type', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     // #region U8
     const { value } = await contractInstance.functions.echo_u8(3).call();
     expect(value).toBe(3);
@@ -80,90 +81,141 @@ describe('Coverage Contract', () => {
   });
 
   it('should test u8 variable type multiple params', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const { value } = await contractInstance.functions.echo_u8_addition(3, 4, 3).call();
     expect(value).toBe(10);
   });
 
   it('should test u16 variable type', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const { value } = await contractInstance.functions.echo_u16(RUST_U8_MAX + 1).call();
     expect(value).toBe(RUST_U8_MAX + 1);
   });
 
   it('should test u32 variable type', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const { value } = await contractInstance.functions.echo_u32(RUST_U16_MAX + 1).call();
     expect(value).toBe(RUST_U16_MAX + 1);
   });
 
   it('should test u64 variable type', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const INPUT = bn(RUST_U32_MAX).add(1).toHex();
     const { value } = await contractInstance.functions.echo_u64(INPUT).call();
     expect(value.toHex()).toBe(INPUT);
   });
 
   it('should test bool variable type', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const { value } = await contractInstance.functions.echo_bool(false).call();
     expect(value).toBe(false);
   });
 
   it('should test b256 variable type', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const { value } = await contractInstance.functions.echo_b256(B256).call();
     expect(value).toBe(B256);
   });
 
   it('should test b512 variable type', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const { value } = await contractInstance.functions.echo_b512(B512).call();
     expect(value).toBe(B512);
   });
 
   it('should test str[1] variable type', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const { value } = await contractInstance.functions.echo_str_1('f').call();
     expect(value).toBe('f');
   });
 
   it('should test str[2] variable type', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const { value } = await contractInstance.functions.echo_str_2('fu').call();
     expect(value).toBe('fu');
   });
 
   it('should test str[3] variable type', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const { value } = await contractInstance.functions.echo_str_3('fue').call();
     expect(value).toBe('fue');
   });
 
   it('should test str[8] variable type', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const { value } = await contractInstance.functions.echo_str_8('fuel-sdk').call();
 
     expect(value).toBe('fuel-sdk');
   });
 
   it('should test str[9] variable type', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const { value } = await contractInstance.functions.echo_str_9('fuel-sdks').call();
     expect(value).toBe('fuel-sdks');
   });
 
   it('should test tuple < 8 bytes variable type', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const { value } = await contractInstance.functions.echo_tuple_u8([21, 22]).call();
     expect(value).toStrictEqual([21, 22]);
   });
 
   it('should test tuple > 8 bytes variable type', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const INPUT = [bn(RUST_U32_MAX).add(1), bn(RUST_U32_MAX).add(2)];
     const { value } = await contractInstance.functions.echo_tuple_u64(INPUT).call();
     expect(JSON.stringify(value)).toStrictEqual(JSON.stringify(INPUT));
   });
 
   it('should test tuple mixed variable type', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const INPUT = [true, bn(RUST_U32_MAX).add(1)];
     const { value } = await contractInstance.functions.echo_tuple_mixed(INPUT).call();
     expect(JSON.stringify(value)).toStrictEqual(JSON.stringify(INPUT));
   });
 
   it('should test array < 8 bytes variable type', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const { value } = await contractInstance.functions.echo_array_u8([4, 3]).call();
     expect(value).toStrictEqual([4, 3]);
   });
 
   it('should test array > 8 bytes variable type', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const INPUT: [number, string, BN, string, string] = [
       11,
       toHex(RUST_U32_MAX + 2),
@@ -178,29 +230,44 @@ describe('Coverage Contract', () => {
   });
 
   it('should test array bool variable type', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const { value } = await contractInstance.functions.echo_array_bool([true, true]).call();
     expect(value).toStrictEqual([true, true]);
   });
 
   it('should test struct < 8 bytes variable type', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const INPUT = { i: 4 };
     const { value } = await contractInstance.functions.echo_struct_u8(INPUT).call();
     expect(value).toStrictEqual(INPUT);
   });
 
   it('should test struct > 8 bytes variable type', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const INPUT = { i: B256 };
     const { value } = await contractInstance.functions.echo_struct_b256(INPUT).call();
     expect(value).toStrictEqual(INPUT);
   });
 
   it('should test enum < 8 byte variable type', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const INPUT = SmallEnum.Empty;
     const { value } = await contractInstance.functions.echo_enum_small(INPUT).call();
     expect(value).toStrictEqual(INPUT);
   });
 
   it('should test enum > 8 bytes variable type', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const INPUT = { AddressB: B256 };
 
     const { value } = await contractInstance.functions.echo_enum_big(INPUT).call();
@@ -208,12 +275,18 @@ describe('Coverage Contract', () => {
   });
 
   it('should test Option<u8> type', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const INPUT = 187;
     const { value } = await contractInstance.functions.echo_option_u8(INPUT).call();
     expect(value).toStrictEqual(INPUT);
   });
 
   it('should test Option<u32> extraction [Some]', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const INPUT_SOME = 123;
     const { value: Some } = await contractInstance.functions
       .echo_option_extract_u32(INPUT_SOME)
@@ -222,6 +295,9 @@ describe('Coverage Contract', () => {
   });
 
   it('should test Option<u32> extraction [None]', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const INPUT_NONE = undefined;
     const { value: None } = await contractInstance.functions
       .echo_option_extract_u32(INPUT_NONE)
@@ -233,6 +309,9 @@ describe('Coverage Contract', () => {
   });
 
   it('should test multiple Option<u32> params [Some]', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const INPUT_A = 1;
     const INPUT_B = 4;
     const INPUT_C = 5;
@@ -247,6 +326,9 @@ describe('Coverage Contract', () => {
   });
 
   it('should test multiple Option<u32> params [None]', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const INPUT = 1;
 
     // adds the three values together, but only first param value is supplied
@@ -257,11 +339,17 @@ describe('Coverage Contract', () => {
   });
 
   it('should test u8 empty vector input', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const { value } = await contractInstance.functions.check_u8_vector([]).call();
     expect(value).toBeFalsy();
   });
 
   it('should test u8 vector input', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const { value, logs } = await contractInstance.functions
       .check_u8_vector([1, 2, 3, 4, 5])
       .call();
@@ -273,6 +361,9 @@ describe('Coverage Contract', () => {
   });
 
   it('should echo u8 vector input', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const { value } = await contractInstance.functions
       .echo_u8_vector_first([23, 6, 1, 51, 2])
       .call();
@@ -281,12 +372,18 @@ describe('Coverage Contract', () => {
   });
 
   it('should echo a vector of optional u8 input', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const { value } = await contractInstance.functions.echo_u8_option_vector_first([28]).call();
 
     expect(value).toBe(28);
   });
 
   it('should echo u64 vector input', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const INPUT = bn(54).toHex();
     const { value } = await contractInstance.functions
       .echo_u64_vector_last([200, 100, 24, 51, 23, INPUT])
@@ -295,6 +392,9 @@ describe('Coverage Contract', () => {
   });
 
   it('should echo u32 vector addition of mixed params', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const { value } = await contractInstance.functions
       .echo_u32_vector_addition_other_type([100, 2], 47)
       .call();
@@ -302,6 +402,9 @@ describe('Coverage Contract', () => {
   });
 
   it('should echo u32 vector addition', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const { value } = await contractInstance.functions
       .echo_u32_vector_addition([100, 2], [24, 54])
       .call();
@@ -309,6 +412,9 @@ describe('Coverage Contract', () => {
   });
 
   it('should echo u32 vector addition [variable lengths]', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const { value } = await contractInstance.functions
       .echo_u32_vector_addition([100, 2, 1, 2, 3], [24, 54])
       .call();
@@ -316,6 +422,9 @@ describe('Coverage Contract', () => {
   });
 
   it('should echo struct vector input', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const first = {
       foo: 1,
       bar: 10,
@@ -337,6 +446,9 @@ describe('Coverage Contract', () => {
   });
 
   it('should echo complex struct vector input', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const last = {
       foo: 3,
       bar: bn(31337).toHex(),
@@ -366,7 +478,7 @@ describe('Coverage Contract', () => {
   });
 
   it('should get initial state messages from node', async () => {
-    const provider = await Provider.connect('http://127.0.0.1:4000/graphql');
+    await using provider = await setupTestProvider();
 
     // #region Message-getMessages
     const WALLET_A = Wallet.fromPrivateKey(
@@ -410,7 +522,7 @@ describe('Coverage Contract', () => {
   });
 
   it('should test spending input messages', async () => {
-    const provider = await Provider.connect('http://127.0.0.1:4000/graphql');
+    await using provider = await setupTestProvider();
     const request = new ScriptTransactionRequest({ gasLimit: 1000000 });
 
     const recipient = Wallet.generate({
@@ -437,6 +549,9 @@ describe('Coverage Contract', () => {
   });
 
   it('can read from produce_logs_variables', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const { logs } = await contractInstance.functions.produce_logs_variables().call();
 
     expect(logs[0].toHex()).toEqual(bn(64).toHex());
@@ -446,6 +561,9 @@ describe('Coverage Contract', () => {
   });
 
   it('should test native enum [Red->Green]', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const INPUT: ColorEnumInput = ColorEnumInput.Red;
     const OUTPUT: ColorEnumOutput = ColorEnumOutput.Green;
     const { value } = await contractInstance.functions.color_enum(INPUT).call();
@@ -454,6 +572,9 @@ describe('Coverage Contract', () => {
   });
 
   it('should test native enum [Green->Blue]', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const INPUT: ColorEnumInput = ColorEnumInput.Green;
     const OUTPUT: ColorEnumOutput = ColorEnumOutput.Blue;
 
@@ -462,6 +583,9 @@ describe('Coverage Contract', () => {
   });
 
   it('should test native enum [Blue->Red]', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const INPUT: ColorEnumInput = ColorEnumInput.Blue;
     const OUTPUT: ColorEnumOutput = ColorEnumOutput.Red;
 
@@ -470,6 +594,9 @@ describe('Coverage Contract', () => {
   });
 
   it('should try vec_as_only_param', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const { value } = await contractInstance.functions
       .vec_as_only_param([100, 450, 202, 340])
       .call();
@@ -483,6 +610,9 @@ describe('Coverage Contract', () => {
   });
 
   it('should try u32_and_vec_params', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const { value } = await contractInstance.functions
       .u32_and_vec_params(33, [450, 202, 340])
       .call();
@@ -496,6 +626,9 @@ describe('Coverage Contract', () => {
   });
 
   it('should support vec in vec', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const INPUT = [
       [0, 1, 2],
       [0, 1, 2],
@@ -507,6 +640,9 @@ describe('Coverage Contract', () => {
   });
 
   it('should support array in vec', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const INPUT = [
       [0, 1, 2],
       [0, 1, 2],
@@ -518,6 +654,9 @@ describe('Coverage Contract', () => {
   });
 
   it('should test b256 multiple params vector input/output', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const INPUT_A = [hexlify(randomBytes(32)), hexlify(randomBytes(32)), hexlify(randomBytes(32))];
     const INPUT_B = [hexlify(randomBytes(32)), hexlify(randomBytes(32)), hexlify(randomBytes(32))];
     const INPUT_C = hexlify(randomBytes(32));
@@ -531,6 +670,9 @@ describe('Coverage Contract', () => {
   });
 
   it.skip('should handle multiple calls [with vectors]', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const INPUT_A = [hexlify(randomBytes(32)), hexlify(randomBytes(32)), hexlify(randomBytes(32))];
     const INPUT_B = [hexlify(randomBytes(32))];
     const INPUT_C = hexlify(randomBytes(32));
@@ -549,6 +691,9 @@ describe('Coverage Contract', () => {
   });
 
   it.skip('should handle multiple calls [with vectors + stack data first]', async () => {
+    await using provider = await setupTestProvider();
+    const contractInstance = await setupContract(provider);
+
     const INPUT_A = [hexlify(randomBytes(32)), hexlify(randomBytes(32)), hexlify(randomBytes(32))];
     const INPUT_B = [hexlify(randomBytes(32))];
     const INPUT_C = hexlify(randomBytes(32));
