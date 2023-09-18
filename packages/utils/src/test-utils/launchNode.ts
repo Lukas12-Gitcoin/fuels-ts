@@ -20,6 +20,12 @@ type LaunchNodeOptions = {
   useSystemFuelCore?: boolean;
 };
 
+export type LaunchNodeResult = Promise<{
+  cleanup: () => void;
+  ip: string;
+  port: string;
+}>;
+
 /**
  * Launches a fuel-core node.
  * @param chainConfigPath - path to the chain configuration file.
@@ -36,14 +42,9 @@ export const launchNode = async ({
   port,
   args = defaultFuelCoreArgs,
   useSystemFuelCore = false,
-}: LaunchNodeOptions): Promise<{
-  cleanup: () => void;
-  ip: string;
-  port: string;
-}> =>
+}: LaunchNodeOptions): LaunchNodeResult =>
   // eslint-disable-next-line no-async-promise-executor
   new Promise(async (resolve) => {
-    process.setMaxListeners(10000);
     // This string is logged by the client when the node has successfully started. We use it to know when to resolve.
     const graphQLStartSubstring = 'Binding GraphQL provider to';
 
@@ -65,6 +66,7 @@ export const launchNode = async ({
 
       chainConfigPathToUse = tempChainConfigFilePath;
     }
+
     const portToUse =
       port ||
       (
@@ -92,6 +94,7 @@ export const launchNode = async ({
     // Cleanup function where fuel-core is stopped.
     const cleanup = () => {
       kill(Number(child.pid));
+
       // Remove all the listeners we've added.
       child.stdout.removeAllListeners();
       child.stderr.removeAllListeners();
