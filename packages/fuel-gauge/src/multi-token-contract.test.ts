@@ -33,7 +33,7 @@ const subIds = [
 
 describe('MultiTokenContract', () => {
   it('can mint and transfer coins', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     // New wallet to transfer coins and check balance
     const userWallet = Wallet.generate({ provider });
     const multiTokenContract = await setup(provider);
@@ -108,7 +108,7 @@ describe('MultiTokenContract', () => {
   });
 
   it('can burn coins', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const multiTokenContract = await setup(provider);
     const contractId = { value: multiTokenContract.id.toB256() };
 

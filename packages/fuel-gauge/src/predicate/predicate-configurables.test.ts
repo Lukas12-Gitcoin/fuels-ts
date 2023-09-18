@@ -21,7 +21,7 @@ describe('Predicate', () => {
     };
 
     beforeEach(async () => {
-      await using provider = await setupTestProvider();
+      using provider = await setupTestProvider();
 
       const quantities: CoinQuantityLike[] = [
         {

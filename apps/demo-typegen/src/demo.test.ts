@@ -11,7 +11,7 @@ import bytecode from './generated-types/DemoContractAbi.hex';
 
 describe('ExampleContract', () => {
   it('should return the input', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const wallet = await generateTestWallet(provider, [[1_000, BaseAssetId]]);
 
     // Deploy
@@ -31,7 +31,7 @@ describe('ExampleContract', () => {
   });
 
   it('deployContract method', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const wallet = await generateTestWallet(provider, [[1_000, BaseAssetId]]);
 
     // Deploy
@@ -49,7 +49,7 @@ describe('ExampleContract', () => {
 // #endregion Testing-with-jest-ts
 
 it('should throw when simulating via contract factory with wallet with no resources', async () => {
-  await using provider = await setupTestProvider();
+  using provider = await setupTestProvider();
   const fundedWallet = await generateTestWallet(provider, [[1_000, BaseAssetId]]);
   const unfundedWallet = Wallet.generate({ provider });
 
@@ -63,7 +63,7 @@ it('should throw when simulating via contract factory with wallet with no resour
 });
 
 it('should throw when dry running via contract factory with wallet with no resources', async () => {
-  await using provider = await setupTestProvider();
+  using provider = await setupTestProvider();
   const fundedWallet = await generateTestWallet(provider, [[1_000, BaseAssetId]]);
   const unfundedWallet = Wallet.generate({ provider });
 

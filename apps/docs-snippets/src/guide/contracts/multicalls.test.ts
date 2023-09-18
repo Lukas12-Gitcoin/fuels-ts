@@ -39,7 +39,7 @@ describe(__filename, () => {
   };
 
   it('should successfully submit multiple calls from the same contract function', async () => {
-    await using wallet = await getTestWallet();
+    using wallet = await getTestWallet();
     const { counterContract } = await deployContracts(wallet);
 
     // #region multicall-1
@@ -61,7 +61,7 @@ describe(__filename, () => {
   });
 
   it('should successfully submit multiple calls from different contracts functions', async () => {
-    await using wallet = await getTestWallet();
+    using wallet = await getTestWallet();
     const { echoContract, counterContract } = await deployContracts(wallet);
 
     // #region multicall-2
@@ -83,7 +83,7 @@ describe(__filename, () => {
   });
 
   it('should successfully submit multiple calls from different contracts functions', async () => {
-    await using wallet = await getTestWallet();
+    using wallet = await getTestWallet();
     const { echoContract, contextContract } = await deployContracts(wallet);
 
     // #region multicall-3

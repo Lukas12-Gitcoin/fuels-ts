@@ -6,7 +6,7 @@ import { createAndDeployContractFromProject } from '../../utils';
 
 describe(__filename, () => {
   it('should successfully simulate contract call with forwarded amount', async () => {
-    await using contract = await createAndDeployContractFromProject(
+    using contract = await createAndDeployContractFromProject(
       SnippetProjectEnum.TRANSFER_TO_ADDRESS
     );
 
@@ -33,7 +33,7 @@ describe(__filename, () => {
   });
 
   it('should successfully execute a simulate call', async () => {
-    await using contract = await createAndDeployContractFromProject(SnippetProjectEnum.ECHO_VALUES);
+    using contract = await createAndDeployContractFromProject(SnippetProjectEnum.ECHO_VALUES);
 
     // #region simulate-transactions-2
     const { value } = await contract.functions.echo_u8(15).simulate();
@@ -53,7 +53,7 @@ describe(__filename, () => {
   });
 
   it('should throw when dry running with an unfunded wallet', async () => {
-    await using contract = await createAndDeployContractFromProject(SnippetProjectEnum.ECHO_VALUES);
+    using contract = await createAndDeployContractFromProject(SnippetProjectEnum.ECHO_VALUES);
     const unfundedWallet = Wallet.generate({ provider: contract.provider });
     const { abiContents: abi } = getSnippetProjectArtifacts(SnippetProjectEnum.ECHO_VALUES);
     const deployedContract = new Contract(contract.id, abi, unfundedWallet);

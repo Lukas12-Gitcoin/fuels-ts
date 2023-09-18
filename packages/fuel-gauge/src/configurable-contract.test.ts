@@ -54,7 +54,7 @@ describe('Configurable Contract', () => {
   beforeAll(async () => {});
 
   it('should assert default values', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const { factory } = await setup(provider);
 
     const contract = await factory.deployContract();
@@ -75,7 +75,7 @@ describe('Configurable Contract', () => {
   });
 
   it('should set configurable constant before deploy contract (U8)', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const { factory } = await setup(provider);
 
     const configurableConstants = {
@@ -92,7 +92,7 @@ describe('Configurable Contract', () => {
   });
 
   it('should set configurable constant before deploy contract (U16)', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const { factory } = await setup(provider);
 
     const configurableConstants = {
@@ -109,7 +109,7 @@ describe('Configurable Contract', () => {
   });
 
   it('should set configurable constant before deploy contract (U32)', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const { factory } = await setup(provider);
 
     const configurableConstants = {
@@ -126,7 +126,7 @@ describe('Configurable Contract', () => {
   });
 
   it('should set configurable constant before deploy contract (U64)', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const { factory } = await setup(provider);
 
     const configurableConstants = {
@@ -143,7 +143,7 @@ describe('Configurable Contract', () => {
   });
 
   it('should set configurable constant before deploy contract (BOOL)', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const { factory } = await setup(provider);
 
     const configurableConstants = {
@@ -160,7 +160,7 @@ describe('Configurable Contract', () => {
   });
 
   it('should set configurable constant before deploy contract (B256)', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const { factory } = await setup(provider);
 
     const configurableConstants = {
@@ -177,7 +177,7 @@ describe('Configurable Contract', () => {
   });
 
   it('should set configurable constant before deploy contract (ENUM)', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const { factory } = await setup(provider);
 
     const configurableConstants = {
@@ -194,7 +194,7 @@ describe('Configurable Contract', () => {
   });
 
   it('should set configurable constant before deploy contract (ARRAY)', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const { factory } = await setup(provider);
 
     const configurableConstants = {
@@ -214,7 +214,7 @@ describe('Configurable Contract', () => {
   });
 
   it('should set configurable constant before deploy contract (STR_4)', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const { factory } = await setup(provider);
 
     const configurableConstants = {
@@ -231,7 +231,7 @@ describe('Configurable Contract', () => {
   });
 
   it('should set configurable constant before deploy contract (TUPLE)', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const { factory } = await setup(provider);
 
     const configurableConstants = {
@@ -248,7 +248,7 @@ describe('Configurable Contract', () => {
   });
 
   it('should set configurable constant before deploy contract (STRUCT)', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const { factory } = await setup(provider);
 
     const configurableConstants = {

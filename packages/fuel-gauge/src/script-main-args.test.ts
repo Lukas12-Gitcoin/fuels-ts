@@ -26,7 +26,7 @@ type Baz = {
 
 describe('Script Coverage', () => {
   it('can call script and use main arguments', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const wallet = await setup(provider);
 
     // #region script-call-factory
@@ -41,7 +41,7 @@ describe('Script Coverage', () => {
   });
 
   it('can call script and use main arguments [two args, read logs]', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const wallet = await setup(provider);
     const scriptInstance = getScript<[BigNumberish, Baz], Baz>('script-main-two-args', wallet);
     const foo = 33;
@@ -56,7 +56,7 @@ describe('Script Coverage', () => {
   });
 
   it('can call script and use main arguments [two args, struct return]', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const wallet = await setup(provider);
     const scriptInstance = getScript<[BigNumberish, Baz], Baz>('script-main-return-struct', wallet);
     const foo = 1;
@@ -72,7 +72,7 @@ describe('Script Coverage', () => {
   });
 
   it('can call script and use main arguments [tx params]', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const wallet = await setup(provider);
     const scriptInstance = new Script<BigNumberish[], BigNumberish>(scriptBin, scriptAbi, wallet);
     const foo = 42;

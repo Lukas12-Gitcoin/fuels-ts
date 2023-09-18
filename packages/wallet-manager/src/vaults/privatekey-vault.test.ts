@@ -6,7 +6,7 @@ import { PrivateKeyVault } from './privatekey-vault';
 
 describe('PrivateKeyVault', () => {
   it('should get wallet instance', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const walletSpec = Wallet.generate({
       provider,
     });
@@ -23,7 +23,7 @@ describe('PrivateKeyVault', () => {
   });
 
   it('should check if accounts have been added correctly', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const walletSpec = Wallet.generate({
       provider,
     });
@@ -40,7 +40,7 @@ describe('PrivateKeyVault', () => {
   });
 
   it('should serialize and recreate vault state', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const walletSpec = Wallet.generate({
       provider,
     });
@@ -63,7 +63,7 @@ describe('PrivateKeyVault', () => {
   });
 
   it('should return new account on add account', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const walletSpec = Wallet.generate({
       provider,
     });
@@ -80,7 +80,7 @@ describe('PrivateKeyVault', () => {
   });
 
   it('should throw an error when trying to add an account with an invalid private key', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
 
     const vault = new PrivateKeyVault({
       provider,

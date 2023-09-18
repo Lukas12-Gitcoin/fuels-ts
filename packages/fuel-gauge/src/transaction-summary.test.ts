@@ -45,7 +45,7 @@ describe('TransactionSummary', () => {
   };
 
   it('should ensure getTransactionSummary executes just fine', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const destination = Wallet.generate({
       provider,
     });
@@ -86,7 +86,7 @@ describe('TransactionSummary', () => {
   });
 
   it('should ensure getTransactionsSummaries executes just fine', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
 
     const sender = Wallet.generate({
       provider,
@@ -126,7 +126,7 @@ describe('TransactionSummary', () => {
   });
 
   it('should ensure getTransactionSummaryFromRequest executes just fine', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
 
     const request = new ScriptTransactionRequest({
       gasLimit: 10000,

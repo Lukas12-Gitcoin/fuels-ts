@@ -5,7 +5,7 @@ import { createAndDeployContractFromProject } from '../../utils';
 
 describe(__filename, () => {
   it('should successfully echo tuple in a contract call', async () => {
-    await using contract = await createAndDeployContractFromProject(SnippetProjectEnum.ECHO_VALUES);
+    using contract = await createAndDeployContractFromProject(SnippetProjectEnum.ECHO_VALUES);
 
     // #region tuples-1
     // Sway let tuple2: (u8, bool, u64) = (100, false, 10000);

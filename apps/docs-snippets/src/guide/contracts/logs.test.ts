@@ -5,7 +5,7 @@ import { createAndDeployContractFromProject } from '../../utils';
 
 describe(__filename, () => {
   it('should successfully execute contract call with forwarded amount', async () => {
-    await using contract = await createAndDeployContractFromProject(SnippetProjectEnum.LOG_VALUES);
+    using contract = await createAndDeployContractFromProject(SnippetProjectEnum.LOG_VALUES);
 
     // #region log-2
     const value1 = 500;

@@ -23,7 +23,7 @@ describe(__filename, () => {
   );
 
   it('transfer multiple assets to a contract', async () => {
-    await using wallet = await getTestWallet(seedQuantities);
+    using wallet = await getTestWallet(seedQuantities);
 
     const factory = new ContractFactory(contractBin, contractAbi, wallet);
 

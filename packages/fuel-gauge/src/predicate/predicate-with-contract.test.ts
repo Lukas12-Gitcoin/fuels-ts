@@ -24,7 +24,7 @@ const liquidityPoolBytes = readFileSync(
 describe('Predicate', () => {
   describe('With Contract', () => {
     it('calls a predicate from a contract function', async () => {
-      await using provider = await setupTestProvider({ cacheUtxo: 10 });
+      using provider = await setupTestProvider({ cacheUtxo: 10 });
       const wallet = await generateTestWallet(provider, [[1_000_000, BaseAssetId]]);
 
       const setupContract = setupContractWithConfig({
@@ -59,7 +59,7 @@ describe('Predicate', () => {
     });
 
     it('calls a predicate and uses proceeds for a contract call', async () => {
-      await using provider = await setupTestProvider();
+      using provider = await setupTestProvider();
       const wallet = await generateTestWallet(provider, [[1_000_000, BaseAssetId]]);
       const receiver = await generateTestWallet(provider);
       const initialReceiverBalance = toNumber(await receiver.getBalance());

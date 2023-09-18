@@ -5,9 +5,7 @@ import { createAndDeployContractFromProject } from '../../utils';
 
 describe(__filename, () => {
   it('should successfully update contract instance wallet', async () => {
-    await using contract = await createAndDeployContractFromProject(
-      SnippetProjectEnum.RETURN_CONTEXT
-    );
+    using contract = await createAndDeployContractFromProject(SnippetProjectEnum.RETURN_CONTEXT);
 
     const newWallet = WalletUnlocked.generate({
       provider: contract.provider,

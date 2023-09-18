@@ -17,7 +17,7 @@ const setupContract = createSetupConfig({
 });
 
 test('allow sending coins to payable functions', async () => {
-  await using provider = await setupTestProvider();
+  using provider = await setupTestProvider();
   const contract = await setupContract(provider);
 
   // This should not fail because the function is payable
@@ -35,7 +35,7 @@ test('allow sending coins to payable functions', async () => {
 });
 
 test("don't allow sending coins to non-payable functions", async () => {
-  await using provider = await setupTestProvider();
+  using provider = await setupTestProvider();
   const contract = await setupContract(provider);
 
   // This should fail because the function is not payable

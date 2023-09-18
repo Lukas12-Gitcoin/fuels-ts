@@ -26,7 +26,7 @@ describe('Auth Testing', () => {
   };
 
   it('can get is_caller_external', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const { wallet, contractInstance } = await setup(provider);
     const { value } = await contractInstance.functions.is_caller_external().call();
 
@@ -34,7 +34,7 @@ describe('Auth Testing', () => {
   });
 
   it('can check_msg_sender [with correct id]', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const { wallet, contractInstance } = await setup(provider);
     const { value } = await contractInstance.functions
       .check_msg_sender({ value: wallet.address.toB256() })
@@ -44,7 +44,7 @@ describe('Auth Testing', () => {
   });
 
   it('can check_msg_sender [with incorrect id]', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const { contractInstance } = await setup(provider);
     await expect(
       contractInstance.functions.check_msg_sender({ value: getRandomB256() }).call()

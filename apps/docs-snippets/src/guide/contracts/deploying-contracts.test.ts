@@ -9,7 +9,7 @@ describe(__filename, () => {
   beforeAll(async () => {});
 
   it('should successfully deploy and execute contract function', async () => {
-    await using w = await getTestWallet();
+    using w = await getTestWallet();
     const provider = w.provider;
     const PRIVATE_KEY = w.privateKey;
     const projectsPath = join(__dirname, '../../../projects');

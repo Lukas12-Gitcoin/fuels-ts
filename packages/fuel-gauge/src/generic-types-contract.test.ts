@@ -16,7 +16,7 @@ const contractBytecode = readFileSync(
 
 describe('GenericTypesContract', () => {
   it('should call complex contract function with generic type', async () => {
-    await using provider = await setupTestProvider({ cacheUtxo: 10 });
+    using provider = await setupTestProvider({ cacheUtxo: 10 });
 
     const contract = await setup(provider, {
       abi: abiJSON,

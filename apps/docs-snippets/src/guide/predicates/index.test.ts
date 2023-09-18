@@ -12,7 +12,7 @@ describe(__filename, () => {
     // #region predicate-index-2
     // #context import { Predicate, Provider, FUEL_NETWORK_URL } from 'fuels';
 
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const chainId = await provider.getChainId();
     const predicate = new Predicate(binary, chainId, provider, jsonAbi);
     // #endregion predicate-index-2

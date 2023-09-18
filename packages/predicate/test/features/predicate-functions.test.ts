@@ -11,13 +11,13 @@ describe('Predicate', () => {
     const predicateAddress = '0x4f780df441f7a02b5c1e718fcd779776499a0d1069697db33f755c82d7bae02b';
 
     it('sets predicate address for given byte code', async () => {
-      await using provider = await setupTestProvider();
+      using provider = await setupTestProvider();
       const predicate = new Predicate(defaultPredicateBytecode, chainId, provider);
       expect(predicate.address.toB256()).toEqual(predicateAddress);
     });
 
     it('sets predicate data for given ABI', async () => {
-      await using provider = await setupTestProvider();
+      using provider = await setupTestProvider();
 
       const predicate = new Predicate(
         defaultPredicateBytecode,
@@ -33,7 +33,7 @@ describe('Predicate', () => {
     });
 
     it('throws when predicate ABI has no main function', async () => {
-      await using provider = await setupTestProvider();
+      using provider = await setupTestProvider();
 
       const abiWithNoMain = {
         ...defaultPredicateAbi,

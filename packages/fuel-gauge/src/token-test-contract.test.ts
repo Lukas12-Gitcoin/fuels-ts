@@ -23,7 +23,7 @@ const setup = async (provider: Provider) => {
 
 describe('TokenTestContract', () => {
   it('Can mint and transfer coins', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     // New wallet to transfer coins and check balance
     const userWallet = Wallet.generate({ provider });
     const token = await setup(provider);
@@ -57,7 +57,7 @@ describe('TokenTestContract', () => {
   });
 
   it('Automatically add variableOuputs', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
 
     const [wallet1, wallet2, wallet3] = Array.from({ length: 3 }, () =>
       Wallet.generate({ provider })
@@ -117,7 +117,7 @@ describe('TokenTestContract', () => {
   });
 
   it('Contract getBalance', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
 
     const userWallet = Wallet.generate({ provider });
     const token = await setup(provider);

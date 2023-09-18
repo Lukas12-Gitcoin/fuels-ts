@@ -36,7 +36,7 @@ describe('Predicate', () => {
     };
 
     it('throws if sender does not have enough resources for tx and gas', async () => {
-      await using provider = await setupTestProvider();
+      using provider = await setupTestProvider();
       const { predicate, predicateBalance, receiver } = await setupPredicate(provider);
       await expect(
         predicate.setData(validation).transfer(receiver.address, predicateBalance)
@@ -44,7 +44,7 @@ describe('Predicate', () => {
     });
 
     it('throws if the passed gas limit is too low', async () => {
-      await using provider = await setupTestProvider();
+      using provider = await setupTestProvider();
       const { predicate, receiver } = await setupPredicate(provider);
 
       // TODO: When gas is to low the return error is Invalid transaction, once is fixed on the

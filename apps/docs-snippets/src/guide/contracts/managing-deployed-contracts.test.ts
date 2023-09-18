@@ -9,7 +9,7 @@ describe(__filename, () => {
   );
 
   it('should successfully interact with a deployed contract', async () => {
-    await using wallet = await getTestWallet();
+    using wallet = await getTestWallet();
     const factory = new ContractFactory(bin, abi, wallet);
 
     const contract = await factory.deployContract();
@@ -25,7 +25,7 @@ describe(__filename, () => {
   });
 
   it('should successfully interact with a deployed contract [hexed contract id]', async () => {
-    await using wallet = await getTestWallet();
+    using wallet = await getTestWallet();
     const factory = new ContractFactory(bin, abi, wallet);
 
     const contract = await factory.deployContract();

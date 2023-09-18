@@ -86,7 +86,7 @@ const setup = async (provider: Provider, balance = 5_000) => {
 
 describe('Vector Types Validation', () => {
   it('can use supported vector types [vector-types-contract]', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const setupContract = getSetupContract('vector-types-contract');
     const contractInstance = await setupContract(provider);
 
@@ -109,7 +109,7 @@ describe('Vector Types Validation', () => {
   });
 
   it('can use supported vector types [vector-types-script]', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const wallet = await setup(provider);
 
     const scriptInstance = getScript<MainArgs, BigNumberish>('vector-types-script', wallet);
@@ -134,7 +134,7 @@ describe('Vector Types Validation', () => {
   });
 
   it('can use supported vector types [predicate-vector-types]', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const wallet = await setup(provider);
     const receiver = Wallet.fromAddress(Address.fromRandom(), wallet.provider);
     const chainId = await wallet.provider.getChainId();

@@ -5,9 +5,7 @@ import { createAndDeployContractFromProject } from '../../utils';
 
 describe(__filename, () => {
   it('should successfully demonstrate typed arrays examples', async () => {
-    await using contract = await createAndDeployContractFromProject(
-      SnippetProjectEnum.ECHO_U64_ARRAY
-    );
+    using contract = await createAndDeployContractFromProject(SnippetProjectEnum.ECHO_U64_ARRAY);
 
     // #region arrays-1
     const numberArray: number[] = [1, 2, 3, 4, 5]; // in Sway: [u8; 5]
@@ -20,9 +18,7 @@ describe(__filename, () => {
   });
 
   it('should successfully execute echo u64 array contract call', async () => {
-    await using contract = await createAndDeployContractFromProject(
-      SnippetProjectEnum.ECHO_U64_ARRAY
-    );
+    using contract = await createAndDeployContractFromProject(SnippetProjectEnum.ECHO_U64_ARRAY);
 
     // #region arrays-2
     const u64Array = [10000000, 20000000];
@@ -36,9 +32,7 @@ describe(__filename, () => {
   });
 
   it('should throw an error for array length mismatch', async () => {
-    await using contract = await createAndDeployContractFromProject(
-      SnippetProjectEnum.ECHO_U64_ARRAY
-    );
+    using contract = await createAndDeployContractFromProject(SnippetProjectEnum.ECHO_U64_ARRAY);
 
     let error: unknown;
     try {
@@ -54,9 +48,7 @@ describe(__filename, () => {
   });
 
   it('should throw an error for array type mismatch', async () => {
-    await using contract = await createAndDeployContractFromProject(
-      SnippetProjectEnum.ECHO_U64_ARRAY
-    );
+    using contract = await createAndDeployContractFromProject(SnippetProjectEnum.ECHO_U64_ARRAY);
 
     let error: unknown;
     try {

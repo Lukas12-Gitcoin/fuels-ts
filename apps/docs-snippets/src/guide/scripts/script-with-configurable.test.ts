@@ -7,7 +7,7 @@ describe(__filename, () => {
   const { abiContents, binHexlified } = getSnippetProjectArtifacts(SnippetProjectEnum.SUM_SCRIPT);
 
   it('should successfully sum setted configurable constant with inpputed value', async () => {
-    await using wallet = await getTestWallet();
+    using wallet = await getTestWallet();
     // #region script-with-configurable-contants-2
     const script = new Script(binHexlified, abiContents, wallet);
 

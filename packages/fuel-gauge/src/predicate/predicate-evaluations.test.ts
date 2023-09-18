@@ -9,7 +9,7 @@ import { setupWallets, assertBalances, fundPredicate } from './utils/predicate';
 describe('Predicate', () => {
   describe('Evaluations', () => {
     it('calls a no argument predicate and returns true', async () => {
-      await using provider = await setupTestProvider();
+      using provider = await setupTestProvider();
       const [wallet, receiver] = await setupWallets(provider);
       const chainId = await wallet.provider.getChainId();
       const amountToPredicate = 100;
@@ -34,7 +34,7 @@ describe('Predicate', () => {
     });
 
     it('calls a no argument predicate and returns false', async () => {
-      await using provider = await setupTestProvider();
+      using provider = await setupTestProvider();
       const [wallet, receiver] = await setupWallets(provider);
       const chainId = await wallet.provider.getChainId();
 

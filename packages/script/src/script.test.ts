@@ -104,7 +104,7 @@ describe('Script', () => {
   // #endregion script-init
 
   it('can call a script', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
 
     const wallet = await setup(provider);
     const input = {
@@ -121,7 +121,7 @@ describe('Script', () => {
   });
 
   it('should TransactionResponse fetch return graphql transaction and also decoded transaction', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
 
     const wallet = await setup(provider);
     const input = {
@@ -135,7 +135,7 @@ describe('Script', () => {
   });
 
   it('should throw if script has no configurable to be set', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
 
     const wallet = await setup(provider);
 
@@ -149,7 +149,7 @@ describe('Script', () => {
   });
 
   it('should throw when setting configurable with wrong name', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const wallet = await setup(provider);
 
     const jsonAbiWithConfigurablesMock: JsonAbi = {

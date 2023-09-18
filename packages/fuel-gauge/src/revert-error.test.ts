@@ -21,7 +21,7 @@ let wallet: WalletUnlocked;
 
 describe('Revert Error Testing', () => {
   beforeAll(async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     wallet = await generateTestWallet(provider, [[1_000, BaseAssetId]]);
 
     const bytecode = fs.readFileSync(

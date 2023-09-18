@@ -26,7 +26,7 @@ afterEach(() => {
 
 describe('Provider', () => {
   it('can getVersion()', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
 
     const version = await provider.getVersion();
 
@@ -34,7 +34,7 @@ describe('Provider', () => {
   });
 
   it('can call()', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
 
     const CoinInputs: CoinTransactionRequestInput[] = [
       {
@@ -99,7 +99,7 @@ describe('Provider', () => {
   // as we test this in other modules like call contract its ok to
   // skip for now
   it.skip('can sendTransaction()', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
 
     const response = await provider.sendTransaction({
       type: TransactionType.Script,
@@ -145,7 +145,7 @@ describe('Provider', () => {
   });
 
   it('can get all chain info', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const { consensusParameters } = await provider.getChain();
 
     expect(consensusParameters.contractMaxSize).toBeDefined();
@@ -166,7 +166,7 @@ describe('Provider', () => {
 
   it('can get node info including some consensus parameters properties', async () => {
     // #region provider-definition
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const { minGasPrice, gasPerByte, gasPriceFactor, maxGasPerTx, nodeVersion } =
       await provider.getNodeInfo();
     // #endregion provider-definition
@@ -179,7 +179,7 @@ describe('Provider', () => {
   });
 
   it('can change the provider url of the current instance', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const spyGraphQLClient = jest.spyOn(GraphQL, 'GraphQLClient');
 
     const providerUrl2 = 'http://127.0.0.1:8080/graphql';
@@ -221,14 +221,14 @@ describe('Provider', () => {
       }
       return fetch(url, options);
     };
-    await using provider = await setupTestProvider({ fetch: customFetch });
+    using provider = await setupTestProvider({ fetch: customFetch });
 
     expect(await provider.getVersion()).toEqual('0.30.0');
   });
 
   it('can force-produce blocks', async () => {
     // #region Provider-produce-blocks
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
 
     const block = await provider.getBlock('latest');
     if (!block) {
@@ -249,7 +249,7 @@ describe('Provider', () => {
   // `block_production` config option for `fuel_core`.
   // See: https://github.com/FuelLabs/fuel-core/blob/def8878b986aedad8434f2d1abf059c8cbdbb8e2/crates/services/consensus_module/poa/src/config.rs#L20
   it.skip('can force-produce blocks with custom timestamps', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
 
     const block = await provider.getBlock('latest');
     if (!block) {
@@ -291,13 +291,13 @@ describe('Provider', () => {
   });
 
   it('can cacheUtxo [undefined]', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
 
     expect(provider.cache).toEqual(undefined);
   });
 
   it('can cacheUtxo [numerical]', async () => {
-    await using provider = await setupTestProvider({
+    using provider = await setupTestProvider({
       cacheUtxo: 2500,
     });
 
@@ -313,7 +313,7 @@ describe('Provider', () => {
   });
 
   it('can cacheUtxo [will not cache inputs if no cache]', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const transactionRequest = new ScriptTransactionRequest({});
 
     const { error } = await safeExec(() => provider.sendTransaction(transactionRequest));
@@ -323,7 +323,7 @@ describe('Provider', () => {
   });
 
   it('can cacheUtxo [will not cache inputs cache enabled + no coins]', async () => {
-    await using provider = await setupTestProvider({
+    using provider = await setupTestProvider({
       cacheUtxo: 1,
     });
 
@@ -347,7 +347,7 @@ describe('Provider', () => {
   });
 
   it('can cacheUtxo [will cache inputs cache enabled + coins]', async () => {
-    await using provider = await setupTestProvider({
+    using provider = await setupTestProvider({
       cacheUtxo: 10000,
     });
 
@@ -407,7 +407,7 @@ describe('Provider', () => {
   });
 
   it('can cacheUtxo [will cache inputs and also use in exclude list]', async () => {
-    await using provider = await setupTestProvider({
+    using provider = await setupTestProvider({
       cacheUtxo: 10000,
     });
     const EXPECTED: BytesLike[] = [
@@ -480,7 +480,7 @@ describe('Provider', () => {
   });
 
   it('can cacheUtxo [will cache inputs cache enabled + coins]', async () => {
-    await using provider = await setupTestProvider({
+    using provider = await setupTestProvider({
       cacheUtxo: 10000,
     });
     const EXPECTED: BytesLike[] = [
@@ -539,7 +539,7 @@ describe('Provider', () => {
   });
 
   it('can cacheUtxo [will cache inputs and also merge/de-dupe in exclude list]', async () => {
-    await using provider = await setupTestProvider({
+    using provider = await setupTestProvider({
       cacheUtxo: 10000,
     });
     const EXPECTED: BytesLike[] = [
@@ -624,7 +624,7 @@ describe('Provider', () => {
   });
 
   it('can getBlocks', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     // Force-producing some blocks to make sure that 10 blocks exist
     await provider.produceBlocks(10);
     // #region Provider-get-blocks
@@ -648,7 +648,7 @@ describe('Provider', () => {
   it('can getMessageProof with all data', async () => {
     // Create a mock provider to return the message proof
     // It test mainly types and converstions
-    await using provider = await setupTestProvider({
+    using provider = await setupTestProvider({
       fetch: async (url, options) => {
         const messageProof = JSON.stringify(messageProofResponse);
         return Promise.resolve(new Response(messageProof, options));
@@ -663,7 +663,7 @@ describe('Provider', () => {
   });
 
   it('can connect', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
 
     // check if the provider was initialized properly
     expect(provider).toBeInstanceOf(Provider);
@@ -672,7 +672,7 @@ describe('Provider', () => {
   });
 
   it('can invalidate the chain info cache', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
 
     // spy on getChain
     const spyGetChain = jest.spyOn(provider, 'getChain');

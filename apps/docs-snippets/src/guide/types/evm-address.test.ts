@@ -24,9 +24,7 @@ describe('EvMAddress', () => {
     // #region evm-address-2
     // #context import type { EvmAddress } from 'fuels';
     // #context import { Address } from 'fuels';
-    await using contract = await createAndDeployContractFromProject(
-      SnippetProjectEnum.ECHO_EVM_ADDRESS
-    );
+    using contract = await createAndDeployContractFromProject(SnippetProjectEnum.ECHO_EVM_ADDRESS);
 
     const b256Address = '0xbebd3baab326f895289ecbd4210cf886ce41952316441ae4cac35f00f0e882a6';
 
@@ -41,9 +39,7 @@ describe('EvMAddress', () => {
   });
 
   it('should pass an evm address to a contract', async () => {
-    await using contract = await createAndDeployContractFromProject(
-      SnippetProjectEnum.ECHO_EVM_ADDRESS
-    );
+    using contract = await createAndDeployContractFromProject(SnippetProjectEnum.ECHO_EVM_ADDRESS);
 
     // #region evm-address-3
     // #context import type { EvmAddress } from 'fuels';
@@ -59,9 +55,7 @@ describe('EvMAddress', () => {
   });
 
   it('should retrieve an evm address from a contract', async () => {
-    await using contract = await createAndDeployContractFromProject(
-      SnippetProjectEnum.ECHO_EVM_ADDRESS
-    );
+    using contract = await createAndDeployContractFromProject(SnippetProjectEnum.ECHO_EVM_ADDRESS);
     // #region evm-address-4
     // #context import type { EvmAddress } from 'fuels';
 

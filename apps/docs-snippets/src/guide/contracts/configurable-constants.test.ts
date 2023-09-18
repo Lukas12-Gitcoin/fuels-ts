@@ -20,7 +20,7 @@ describe(__filename, () => {
   };
 
   it('should successfully set new values for all configurable constants', async () => {
-    await using wallet = await getTestWallet();
+    using wallet = await getTestWallet();
     // #region configurable-constants-2
     const configurableConstants: typeof defaultValues = {
       age: 30,
@@ -49,7 +49,7 @@ describe(__filename, () => {
   });
 
   it('should successfully set new value for one configurable constant', async () => {
-    await using wallet = await getTestWallet();
+    using wallet = await getTestWallet();
 
     // #region configurable-constants-3
     const configurableConstants = {
@@ -72,7 +72,7 @@ describe(__filename, () => {
   });
 
   it('should throw when not properly setting new values for structs', async () => {
-    await using wallet = await getTestWallet();
+    using wallet = await getTestWallet();
 
     // #region configurable-constants-4
     const configurableConstants = {

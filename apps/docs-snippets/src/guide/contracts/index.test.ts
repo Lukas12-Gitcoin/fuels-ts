@@ -3,7 +3,7 @@ import { createAndDeployContractFromProject } from '../../utils';
 
 describe(__filename, () => {
   it('should successfully call contract and echo values', async () => {
-    await using contract = await createAndDeployContractFromProject(SnippetProjectEnum.ECHO_VALUES);
+    using contract = await createAndDeployContractFromProject(SnippetProjectEnum.ECHO_VALUES);
 
     // #region echo-values
     const u8Value = 10;

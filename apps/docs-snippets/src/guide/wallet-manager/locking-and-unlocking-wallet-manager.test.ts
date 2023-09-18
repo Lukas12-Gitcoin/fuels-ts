@@ -3,7 +3,7 @@ import { WalletManager } from '@fuel-ts/wallet-manager';
 
 describe(__filename, () => {
   it('should', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const password = '0b540281-f87b-49ca-be37-2264c7f260f7';
     // #region locking-and-unlocking-wallet-manager-1
     const walletManager = new WalletManager();

@@ -32,7 +32,7 @@ describe('Contract Factory', () => {
   };
 
   it('Creates a factory from inputs that can return call results', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const factory = await createContractFactory(provider);
 
     const contact = await factory.deployContract();
@@ -50,7 +50,7 @@ describe('Contract Factory', () => {
   });
 
   it('Creates a factory from inputs that can return transaction results', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const factory = await createContractFactory(provider);
     const contact = await factory.deployContract();
 
@@ -92,7 +92,7 @@ describe('Contract Factory', () => {
   });
 
   it('Creates a factory from inputs that can prepare call data', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const factory = await createContractFactory(provider);
     const contract = await factory.deployContract();
 
@@ -108,7 +108,7 @@ describe('Contract Factory', () => {
   });
 
   it('Creates a contract with initial storage fixed var names', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const factory = await createContractFactory(provider);
     const contract = await factory.deployContract({
       storageSlots,
@@ -136,7 +136,7 @@ describe('Contract Factory', () => {
   });
 
   it('Creates a contract with initial storage (dynamic key)', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const factory = await createContractFactory(provider);
     const b256 = '0x626f0c36909faecc316056fca8be684ab0cd06afc63247dc008bdf9e433f927a';
 
@@ -151,7 +151,7 @@ describe('Contract Factory', () => {
   });
 
   it('Creates a contract with initial storage. Both dynamic key and fixed vars', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const factory = await createContractFactory(provider);
     const b256 = '0x626f0c36909faecc316056fca8be684ab0cd06afc63247dc008bdf9e433f927a';
 

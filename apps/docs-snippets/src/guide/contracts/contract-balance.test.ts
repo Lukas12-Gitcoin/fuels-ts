@@ -7,7 +7,7 @@ describe(__filename, () => {
   it('should successfully get a contract balance', async () => {
     // #region contract-balance-3
     // #context import { Wallet, BN, BaseAssetId } from 'fuels';
-    await using contract = await createAndDeployContractFromProject(
+    using contract = await createAndDeployContractFromProject(
       SnippetProjectEnum.TRANSFER_TO_ADDRESS
     );
 

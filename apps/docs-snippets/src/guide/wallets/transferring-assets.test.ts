@@ -5,7 +5,7 @@ import { getTestWallet } from '../../utils';
 
 describe(__filename, () => {
   it('should successfully transfer asset to another wallet', async () => {
-    await using senderWallet = await getTestWallet();
+    using senderWallet = await getTestWallet();
 
     // #region transferring-assets-1
     // #context import { Wallet, BN, BaseAssetId } from 'fuels';
@@ -34,7 +34,7 @@ describe(__filename, () => {
   });
 
   it('should successfully transfer asset to a deployed contract', async () => {
-    await using senderWallet = await getTestWallet();
+    using senderWallet = await getTestWallet();
 
     const { abiContents, binHexlified } = getSnippetProjectArtifacts(SnippetProjectEnum.COUNTER);
 

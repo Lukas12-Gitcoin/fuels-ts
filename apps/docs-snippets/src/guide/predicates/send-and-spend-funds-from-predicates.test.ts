@@ -10,7 +10,7 @@ describe(__filename, () => {
   );
 
   it('should successfully use predicate to spend assets', async () => {
-    await using walletWithFunds: WalletUnlocked = await getTestWallet();
+    using walletWithFunds: WalletUnlocked = await getTestWallet();
 
     // #region send-and-spend-funds-from-predicates-2
     const provider = walletWithFunds.provider;
@@ -48,7 +48,7 @@ describe(__filename, () => {
   });
 
   it('should fail when trying to spend predicates entire amount', async () => {
-    await using walletWithFunds: WalletUnlocked = await getTestWallet();
+    using walletWithFunds: WalletUnlocked = await getTestWallet();
     const provider = walletWithFunds.provider;
 
     const predicateOwner = WalletUnlocked.generate({
@@ -83,7 +83,7 @@ describe(__filename, () => {
   });
 
   it('should fail when set wrong input data for predicate', async () => {
-    await using walletWithFunds: WalletUnlocked = await getTestWallet();
+    using walletWithFunds: WalletUnlocked = await getTestWallet();
     const provider = walletWithFunds.provider;
 
     const predicateOwner = WalletUnlocked.generate({

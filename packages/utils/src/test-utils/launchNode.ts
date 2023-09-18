@@ -1,4 +1,4 @@
-import { spawn } from 'child_process';
+import { execSync, spawn } from 'child_process';
 import { randomUUID } from 'crypto';
 import fsSync from 'fs';
 import fs from 'fs/promises';
@@ -50,7 +50,7 @@ export const launchNode = async ({
 
     const command = useSystemFuelCore ? 'fuel-core' : './node_modules/.bin/fuels-core';
 
-    const ipToUse = ip || '0.0.0.0';
+    const ipToUse = ip || '127.0.0.1';
 
     let chainConfigPathToUse = chainConfigPath;
 
@@ -76,24 +76,29 @@ export const launchNode = async ({
         })
       ).toString();
 
-    const child = spawn(command, [
-      'run',
-      '--ip',
-      ipToUse,
-      '--port',
-      portToUse,
-      '--db-type',
-      'in-memory',
-      '--consensus-key',
-      consensusKey,
-      '--chain',
-      chainConfigPathToUse as string,
-      ...args,
-    ]);
+    const child = spawn(
+      command,
+      [
+        'run',
+        '--ip',
+        ipToUse,
+        '--port',
+        portToUse,
+        '--db-type',
+        'in-memory',
+        '--consensus-key',
+        consensusKey,
+        '--chain',
+        chainConfigPathToUse as string,
+        ...args,
+      ],
+      { detached: true }
+    );
 
     // Cleanup function where fuel-core is stopped.
     const cleanup = () => {
-      kill(Number(child.pid));
+      execSync(`kill -9 $(ps -s ${child.pid} -o pid=)`);
+      // kill(Number(child.pid), 'SIGKILL');
 
       // Remove all the listeners we've added.
       child.stdout.removeAllListeners();

@@ -7,7 +7,7 @@ import { MnemonicVault } from './mnemonic-vault';
 
 describe('MnemonicVault', () => {
   it('Get wallet instance', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
 
     const vault = new MnemonicVault({
       secret: walletManagerSpec.mnemonic,
@@ -21,7 +21,7 @@ describe('MnemonicVault', () => {
   });
 
   it('Check if accounts are been added correctly', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
 
     const vault = new MnemonicVault({
       secret: walletManagerSpec.mnemonic,
@@ -36,7 +36,7 @@ describe('MnemonicVault', () => {
   });
 
   it('Serialize and recreate vault state', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
 
     const vault = new MnemonicVault({
       secret: walletManagerSpec.mnemonic,
@@ -54,7 +54,7 @@ describe('MnemonicVault', () => {
   });
 
   it('Derive custom path template', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
 
     const vault = new MnemonicVault({
       secret: walletManagerSpec.mnemonic,
@@ -76,7 +76,7 @@ describe('MnemonicVault', () => {
   });
 
   it('Derive child if rootPath is not a template', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
 
     const vault = new MnemonicVault({
       secret: walletManagerSpec.mnemonic,

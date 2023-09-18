@@ -2,7 +2,7 @@ import { setupTestProvider } from '@fuel-ts/providers/test-utils';
 import { fromTai64ToUnix } from 'fuels';
 
 test('produceBlocks with custom timestamp docs snippet', async () => {
-  await using provider = await setupTestProvider();
+  using provider = await setupTestProvider();
   const latestBlock = await provider.getBlock('latest');
   if (!latestBlock) {
     throw new Error('No latest block');

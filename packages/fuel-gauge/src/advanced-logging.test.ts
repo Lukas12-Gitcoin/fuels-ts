@@ -8,7 +8,7 @@ const setupOtherContract = getSetupContract('advanced-logging-other-contract');
 
 describe('Advanced Logging', () => {
   it('can get log data', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const contractInstance = await setupContract(provider);
 
     const { value, logs } = await contractInstance.functions.test_function().call();
@@ -55,7 +55,7 @@ describe('Advanced Logging', () => {
   });
 
   it('can get log data from require [condition=true]', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const contractInstance = await setupContract(provider);
 
     const { value, logs } = await contractInstance.functions
@@ -67,7 +67,7 @@ describe('Advanced Logging', () => {
   });
 
   it('can get log data from require [condition=false]', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const contractInstance = await setupContract(provider);
 
     const invocation = contractInstance.functions.test_function_with_require(1, 3);
@@ -99,7 +99,7 @@ describe('Advanced Logging', () => {
   });
 
   it('can get log data from a downstream Contract', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const contractInstance = await setupContract(provider);
     const otherContractInstance = await setupOtherContract(provider, { cache: false });
 

@@ -14,7 +14,7 @@ describe(__filename, () => {
   });
 
   it('should successfully generate new address instance from public key', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     // #region address-3
     const wallet = Wallet.generate({
       provider,

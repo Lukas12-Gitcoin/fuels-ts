@@ -12,7 +12,7 @@ import { WalletUnlocked } from './wallets';
 
 describe('Wallet', () => {
   it('Instantiate a new wallet', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const wallet = Wallet.generate({
       provider,
     });
@@ -22,7 +22,7 @@ describe('Wallet', () => {
   });
 
   it('Create a locked wallet', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const wallet = Wallet.generate({
       provider,
     });
@@ -31,7 +31,7 @@ describe('Wallet', () => {
   });
 
   it('Unlock a locked wallet', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const wallet = Wallet.generate({
       provider,
     });
@@ -43,7 +43,7 @@ describe('Wallet', () => {
   });
 
   it('Create from privateKey', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const wallet = Wallet.generate({
       provider,
     });
@@ -53,7 +53,7 @@ describe('Wallet', () => {
   });
 
   it('encrypts and decrypts a JSON wallet', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
 
     const wallet = WalletUnlocked.generate({
       provider,
@@ -69,7 +69,7 @@ describe('Wallet', () => {
   });
 
   it('Should fail to decrypt JSON wallet for a given wrong password', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const wallet = WalletUnlocked.generate({
       provider,
     });
@@ -88,7 +88,7 @@ describe('Wallet', () => {
   });
 
   it('Provide a custom provider on a public wallet to the contract instance', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
 
     const externalWallet = await generateTestWallet(provider, [
       {

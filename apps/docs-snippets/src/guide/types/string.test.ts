@@ -16,7 +16,7 @@ describe(__filename, () => {
   });
 
   it('should successfully execute and validate echoed 8 contract call', async () => {
-    await using contract = await createAndDeployContractFromProject(SnippetProjectEnum.ECHO_VALUES);
+    using contract = await createAndDeployContractFromProject(SnippetProjectEnum.ECHO_VALUES);
 
     // #region string-2
     const { value } = await contract.functions.echo_str_8('fuel-sdk').simulate();
@@ -26,7 +26,7 @@ describe(__filename, () => {
   });
 
   it('will throw given an input string that is too long or too short', async () => {
-    await using contract = await createAndDeployContractFromProject(SnippetProjectEnum.ECHO_VALUES);
+    using contract = await createAndDeployContractFromProject(SnippetProjectEnum.ECHO_VALUES);
 
     // #region string-3
     const longString = 'fuel-sdk-WILL-THROW-ERROR';

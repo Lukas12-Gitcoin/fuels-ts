@@ -14,7 +14,7 @@ const setup = async (provider: Provider, balance = 5_000) => {
 
 describe('Script With Vectors', () => {
   it('can call script and use main argument [array]', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const wallet = await setup(provider);
     const someArray = [1, 100];
     const scriptInstance = getScript<[BigNumberish[]], void>('script-with-array', wallet);
@@ -25,7 +25,7 @@ describe('Script With Vectors', () => {
   });
 
   it('can call script and use main argument [vec]', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const wallet = await setup(provider);
     const someVec = [7, 2, 1, 5];
     const scriptInstance = getScript<[BigNumberish[]], void>('script-with-vector', wallet);
@@ -48,7 +48,7 @@ describe('Script With Vectors', () => {
   });
 
   it('can call script and use main argument [struct in vec in struct in vec in struct in vec]', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const wallet = await setup(provider);
 
     const importantDates = [
@@ -89,7 +89,7 @@ describe('Script With Vectors', () => {
   });
 
   it('can call script and use main argument [struct in vec in struct in vec in struct in vec]', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const wallet = await setup(provider);
 
     const scores = [24, 56, 43];

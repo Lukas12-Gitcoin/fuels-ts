@@ -26,7 +26,7 @@ describe(__filename, () => {
   it('should successfully validate contract id equality', async () => {
     // #region conversion-2
     // #context import { FUEL_NETWORK_URL } from 'fuels';
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
 
     const address = Address.fromRandom();
 
@@ -38,7 +38,7 @@ describe(__filename, () => {
 
   it('should successfully validate a wallet address equality', async () => {
     // #region conversion-3
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
 
     const address = Address.fromRandom();
 

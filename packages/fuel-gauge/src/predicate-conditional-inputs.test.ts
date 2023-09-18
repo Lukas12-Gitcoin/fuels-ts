@@ -18,7 +18,7 @@ describe('PredicateConditionalInputs', () => {
   const assetIdB = '0x0202020202020202020202020202020202020202020202020202020202020202';
 
   it('should execute custom transaction where predicate transfers to Alice (ALICE PAYS FEES)', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
 
     const aliceWallet = Wallet.generate({
       provider,
@@ -90,7 +90,7 @@ describe('PredicateConditionalInputs', () => {
   });
 
   it('should execute custom transaction where predicate transfer to Alice (PREDICATE PAYS FEES)', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
 
     const aliceWallet = Wallet.generate({
       provider,

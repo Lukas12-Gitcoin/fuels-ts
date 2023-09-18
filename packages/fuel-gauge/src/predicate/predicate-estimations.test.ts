@@ -34,7 +34,7 @@ describe('Predicate', () => {
     };
 
     it('estimatePredicates should assign gas to the correct input', async () => {
-      await using provider = await setupTestProvider();
+      using provider = await setupTestProvider();
       const predicateStruct = await getPredicateStruct(provider);
       const predicateTrue = await getPredicateTrue(provider);
 

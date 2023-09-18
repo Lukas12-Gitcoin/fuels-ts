@@ -5,7 +5,7 @@ import { createAndDeployContractFromProject } from '../../utils';
 
 describe(__filename, () => {
   it('should successfully execute and validate contract call', async () => {
-    await using contract = await createAndDeployContractFromProject(
+    using contract = await createAndDeployContractFromProject(
       SnippetProjectEnum.ECHO_EMPLOYEE_DATA_VECTOR
     );
     // #region vector-1

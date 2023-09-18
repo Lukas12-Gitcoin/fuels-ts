@@ -5,7 +5,7 @@ import { createAndDeployContractFromProject } from '../../utils';
 
 describe(__filename, () => {
   it('should successfully call contract function and validate b512', async () => {
-    await using contract = await createAndDeployContractFromProject(SnippetProjectEnum.ECHO_VALUES);
+    using contract = await createAndDeployContractFromProject(SnippetProjectEnum.ECHO_VALUES);
 
     // #region bits512-1
     // #context pub struct B512 {

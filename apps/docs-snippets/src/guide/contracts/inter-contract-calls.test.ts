@@ -5,7 +5,7 @@ import { getTestWallet } from '../../utils';
 
 describe(__filename, () => {
   it('should successfully make call to another contract', async () => {
-    await using wallet = await getTestWallet();
+    using wallet = await getTestWallet();
     const tokenArtifacts = getSnippetProjectArtifacts(SnippetProjectEnum.SIMPLE_TOKEN);
     const depositorArtifacts = getSnippetProjectArtifacts(SnippetProjectEnum.TOKEN_DEPOSITOR);
 

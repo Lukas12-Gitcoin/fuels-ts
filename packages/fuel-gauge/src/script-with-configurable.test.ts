@@ -27,7 +27,7 @@ const quantities: CoinQuantityLike[] = [
 
 describe('Script With Configurable', () => {
   it('should returns true when input value matches default configurable constant', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const wallet = await generateTestWallet(provider, quantities);
 
     const script = new Script(bytecode, abi, wallet);
@@ -41,7 +41,7 @@ describe('Script With Configurable', () => {
   });
 
   it('should returns false when input value differs from default configurable constant', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const wallet = await generateTestWallet(provider, quantities);
     const configurableConstants = { FEE: 71 };
 
@@ -58,7 +58,7 @@ describe('Script With Configurable', () => {
   });
 
   it('should returns true when input value matches manually set configurable constant', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const wallet = await generateTestWallet(provider, quantities);
     const configurableConstants = { FEE: 35 };
 
@@ -73,7 +73,7 @@ describe('Script With Configurable', () => {
   });
 
   it('should returns false when input value differs from manually set configurable constant', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const wallet = await generateTestWallet(provider, quantities);
     const configurableConstants = { FEE: 10 };
 

@@ -4,7 +4,7 @@ import { TransactionResponse, Wallet } from 'fuels';
 
 describe('TransactionSummary', () => {
   it('should ensure create method waits till a transaction response is given', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const adminWallet = await generateTestWallet(provider, [[1_000]]);
 
     const destination = Wallet.generate({
@@ -21,7 +21,7 @@ describe('TransactionSummary', () => {
   });
 
   it('should ensure getTransactionSummary fetchs a transaction and assembles transaction summary', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const adminWallet = await generateTestWallet(provider, [[1_000]]);
 
     const destination = Wallet.generate({
@@ -61,7 +61,7 @@ describe('TransactionSummary', () => {
   });
 
   it('should ensure waitForResult always waits for the transaction to be processed', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     const adminWallet = await generateTestWallet(provider, [[1_000]]);
 
     const destination = Wallet.generate({

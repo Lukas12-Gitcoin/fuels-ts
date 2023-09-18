@@ -4,7 +4,7 @@ import { Wallet } from 'fuels';
 
 describe(__filename, () => {
   it('instantiates the WalletManager', async () => {
-    await using provider = await setupTestProvider();
+    using provider = await setupTestProvider();
     // #region getting-started-with-wallet-manager-1
     const walletManager = new WalletManager();
     // #endregion getting-started-with-wallet-manager-1

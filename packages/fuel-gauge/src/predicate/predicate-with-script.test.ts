@@ -19,7 +19,7 @@ const scriptBytes = readFileSync(
 describe('Predicate', () => {
   describe('With script', () => {
     it('calls a predicate and uses proceeds for a script call', async () => {
-      await using provider = await setupTestProvider();
+      using provider = await setupTestProvider();
       const wallet = await generateTestWallet(provider, [[5_000_000, BaseAssetId]]);
       const receiver = await generateTestWallet(provider);
 

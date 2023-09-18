@@ -153,7 +153,7 @@ describe('Predicate', () => {
     };
 
     it('calls a predicate with valid address data and returns true', async () => {
-      await using provider = await setupTestProvider();
+      using provider = await setupTestProvider();
       const { wallet, receiver, chainId } = await setup(provider);
 
       const amountToPredicate = 100;
@@ -184,7 +184,7 @@ describe('Predicate', () => {
     });
 
     it('calls a predicate with invalid address data and returns false', async () => {
-      await using provider = await setupTestProvider();
+      using provider = await setupTestProvider();
       const { wallet, receiver, chainId } = await setup(provider);
       const amountToPredicate = 10;
       const predicate = new Predicate<[string]>(
@@ -207,7 +207,7 @@ describe('Predicate', () => {
     });
 
     it('calls a predicate with valid u32 data and returns true', async () => {
-      await using provider = await setupTestProvider();
+      using provider = await setupTestProvider();
       const { wallet, receiver, chainId } = await setup(provider);
       const amountToPredicate = 100;
       const amountToReceiver = 50;
@@ -230,7 +230,7 @@ describe('Predicate', () => {
     });
 
     it('calls a predicate with invalid u32 data and returns false', async () => {
-      await using provider = await setupTestProvider();
+      using provider = await setupTestProvider();
       const { wallet, receiver, chainId } = await setup(provider);
       const amountToPredicate = 10;
       const predicate = new Predicate<[number]>(predicateBytesU32, chainId, provider, U32AbiInputs);
@@ -248,7 +248,7 @@ describe('Predicate', () => {
     });
 
     it('calls a predicate with valid struct data and returns true', async () => {
-      await using provider = await setupTestProvider();
+      using provider = await setupTestProvider();
       const { wallet, receiver, chainId } = await setup(provider);
       const amountToPredicate = 100;
       const amountToReceiver = 50;
@@ -281,7 +281,7 @@ describe('Predicate', () => {
     });
 
     it('calls a predicate with invalid struct data and returns false', async () => {
-      await using provider = await setupTestProvider();
+      using provider = await setupTestProvider();
       const { wallet, receiver, chainId } = await setup(provider);
       const amountToPredicate = 10;
 
@@ -310,7 +310,7 @@ describe('Predicate', () => {
     });
 
     it('calls a predicate with a valid struct argument and returns true', async () => {
-      await using provider = await setupTestProvider();
+      using provider = await setupTestProvider();
       const { wallet, receiver, chainId } = await setup(provider);
       const amountToPredicate = 100;
       const amountToReceiver = 50;
@@ -346,7 +346,7 @@ describe('Predicate', () => {
     });
 
     it('calls a predicate with an invalid main struct argument and returns false', async () => {
-      await using provider = await setupTestProvider();
+      using provider = await setupTestProvider();
       const { wallet, receiver, chainId } = await setup(provider);
       const amountToPredicate = 100;
       const predicate = new Predicate<[Validation]>(
@@ -372,7 +372,7 @@ describe('Predicate', () => {
     });
 
     it('can call a Coin predicate which returns true with valid predicate data [main args vector]', async () => {
-      await using provider = await setupTestProvider();
+      using provider = await setupTestProvider();
       const { wallet, receiver, chainId } = await setup(provider);
       const amountToPredicate = 100;
       const amountToReceiver = 50;
@@ -400,7 +400,7 @@ describe('Predicate', () => {
     });
 
     it('calls a predicate with valid multiple arguments and returns true', async () => {
-      await using provider = await setupTestProvider();
+      using provider = await setupTestProvider();
       const { wallet, receiver, chainId } = await setup(provider);
       const amountToPredicate = 100;
       const amountToReceiver = 50;
@@ -427,7 +427,7 @@ describe('Predicate', () => {
     });
 
     it('calls a predicate with invalid multiple arguments and returns false', async () => {
-      await using provider = await setupTestProvider();
+      using provider = await setupTestProvider();
       const { wallet, receiver, chainId } = await setup(provider);
       const amountToPredicate = 100;
       const predicate = new Predicate(predicateBytesMulti, chainId, provider, predicateAbiMulti);
