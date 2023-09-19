@@ -51,8 +51,6 @@ describe('Configurable Contract', () => {
     return { factory };
   };
 
-  beforeAll(async () => {});
-
   it('should assert default values', async () => {
     using provider = await setupTestProvider();
     const { factory } = await setup(provider);

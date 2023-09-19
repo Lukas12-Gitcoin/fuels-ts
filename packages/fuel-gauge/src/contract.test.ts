@@ -792,7 +792,7 @@ describe('Contract', () => {
     }
 
     // Set custom provider to contract instance
-    const customProvider = await ProviderCustom.connect('http://127.0.0.1:4000/graphql');
+    const customProvider = await ProviderCustom.connect(provider.url);
     contract.account = Wallet.fromAddress(externalWallet.address, customProvider);
     contract.provider = customProvider;
 

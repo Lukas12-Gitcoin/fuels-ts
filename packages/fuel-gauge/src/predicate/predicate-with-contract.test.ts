@@ -30,7 +30,6 @@ describe('Predicate', () => {
       const setupContract = setupContractWithConfig({
         contractBytecode: contractBytes,
         abi: contractAbi,
-        cache: true,
       });
       const contract = await setupContract(provider);
       const amountToPredicate = 100_000;

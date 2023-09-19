@@ -6,8 +6,6 @@ import { SnippetProjectEnum } from '../../../projects';
 import { getTestWallet } from '../../utils';
 
 describe(__filename, () => {
-  beforeAll(async () => {});
-
   it('should successfully deploy and execute contract function', async () => {
     using w = await getTestWallet();
     const provider = w.provider;

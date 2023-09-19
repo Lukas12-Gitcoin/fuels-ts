@@ -29,12 +29,8 @@ const scriptBin = readFileSync(
   join(__dirname, './call-test-script/out/debug/call-test-script.bin')
 );
 
-const setup = async (provider: Provider) => {
-  // Create wallet
-  const wallet = await generateTestWallet(provider, [[5_000_000, BaseAssetId]]);
-
-  return wallet;
-};
+const setupWallet = async (provider: Provider) =>
+  generateTestWallet(provider, [[5_000_000, BaseAssetId]]);
 
 const callScript = async <TData, TResult>(
   account: Account,
@@ -78,10 +74,9 @@ type MyStruct = {
 };
 
 describe('Script', () => {
-  let scriptRequest: ScriptRequest<MyStruct, MyStruct>;
-  beforeAll(() => {
+  const setupScriptRequest = () => {
     const abiInterface = new Interface(jsonAbiFragmentMock);
-    scriptRequest = new ScriptRequest(
+    return new ScriptRequest(
       scriptBin,
       (myStruct: MyStruct) => {
         const encoded = abiInterface.functions.main.encodeArguments([myStruct]);
@@ -100,13 +95,15 @@ describe('Script', () => {
         return (decoded as any)[0];
       }
     );
-  });
+  };
+
   // #endregion script-init
 
   it('can call a script', async () => {
     using provider = await setupTestProvider();
+    const wallet = await setupWallet(provider);
+    const scriptRequest = setupScriptRequest();
 
-    const wallet = await setup(provider);
     const input = {
       arg_one: true,
       arg_two: 1337,
@@ -123,7 +120,9 @@ describe('Script', () => {
   it('should TransactionResponse fetch return graphql transaction and also decoded transaction', async () => {
     using provider = await setupTestProvider();
 
-    const wallet = await setup(provider);
+    const wallet = await setupWallet(provider);
+    const scriptRequest = setupScriptRequest();
+
     const input = {
       arg_one: true,
       arg_two: 1337,
@@ -137,7 +136,7 @@ describe('Script', () => {
   it('should throw if script has no configurable to be set', async () => {
     using provider = await setupTestProvider();
 
-    const wallet = await setup(provider);
+    const wallet = await setupWallet(provider);
 
     const newScript = new Script(scriptBin, jsonAbiFragmentMock, wallet);
 
@@ -150,7 +149,7 @@ describe('Script', () => {
 
   it('should throw when setting configurable with wrong name', async () => {
     using provider = await setupTestProvider();
-    const wallet = await setup(provider);
+    const wallet = await setupWallet(provider);
 
     const jsonAbiWithConfigurablesMock: JsonAbi = {
       ...jsonAbiMock,

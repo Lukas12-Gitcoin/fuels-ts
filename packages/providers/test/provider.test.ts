@@ -9,6 +9,7 @@ import type { Receipt } from '@fuel-ts/transactions';
 import { InputType, ReceiptType, TransactionType } from '@fuel-ts/transactions';
 import * as GraphQL from 'graphql-request';
 
+import type { GqlGetCoinsToSpendQuery } from '../dist/__generated__/operations';
 import Provider from '../src/provider';
 import type {
   CoinTransactionRequestInput,
@@ -462,7 +463,11 @@ describe('Provider', () => {
     expect(EXCLUDED.map((value) => hexlify(value))).toStrictEqual(EXPECTED);
 
     const owner = Address.fromRandom();
-    const resourcesToSpendMock = jest.fn(() => Promise.resolve({ coinsToSpend: [] }));
+    const resourcesToSpendMock = jest.fn(() =>
+      Promise.resolve<GqlGetCoinsToSpendQuery>({
+        coinsToSpend: [],
+      } as unknown as GqlGetCoinsToSpendQuery)
+    );
     provider.operations.getCoinsToSpend = resourcesToSpendMock;
     await provider.getResourcesToSpend(owner, []);
 
@@ -594,7 +599,11 @@ describe('Provider', () => {
     expect(EXCLUDED.map((value) => hexlify(value))).toStrictEqual(EXPECTED);
 
     const owner = Address.fromRandom();
-    const resourcesToSpendMock = jest.fn(() => Promise.resolve({ coinsToSpend: [] }));
+    const resourcesToSpendMock = jest.fn(() =>
+      Promise.resolve<GqlGetCoinsToSpendQuery>({
+        coinsToSpend: [],
+      } as unknown as GqlGetCoinsToSpendQuery)
+    );
     provider.operations.getCoinsToSpend = resourcesToSpendMock;
     await provider.getResourcesToSpend(owner, [], {
       utxos: [

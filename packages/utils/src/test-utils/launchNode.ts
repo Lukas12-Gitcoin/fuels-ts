@@ -4,7 +4,6 @@ import fsSync from 'fs';
 import fs from 'fs/promises';
 import os from 'os';
 import path from 'path';
-import { getPortPromise } from 'portfinder';
 import kill from 'tree-kill';
 
 import { defaultChainConfig } from './defaultChainConfig';
@@ -26,6 +25,16 @@ export type LaunchNodeResult = Promise<{
   port: string;
 }>;
 
+// async function getFuelCorePid(parentPid: string, wait: boolean = false): Promise<string> {
+//   if (wait) {
+//     await sleep(250);
+//   }
+//   const fuelCorePid = execSync(`ps --ppid ${parentPid} | grep fuel-core | xargs | awk '{print $1}'`)
+//     .toString()
+//     .replace('\n', '');
+
+//   return fuelCorePid === '' ? getFuelCorePid(parentPid, true) : fuelCorePid;
+// }
 /**
  * Launches a fuel-core node.
  * @param chainConfigPath - path to the chain configuration file.
@@ -67,38 +76,34 @@ export const launchNode = async ({
       chainConfigPathToUse = tempChainConfigFilePath;
     }
 
-    const portToUse =
-      port ||
-      (
-        await getPortPromise({
-          port: 4000, // tries 4000 first, then 4001, then 4002, etc.
-          stopPort: 5000, // don't try ports above 5000
-        })
-      ).toString();
+    const child = spawn(command, [
+      'run',
+      '--db-type',
+      'in-memory',
+      '--consensus-key',
+      consensusKey,
+      '--chain',
+      chainConfigPathToUse as string,
+      '--ip',
+      ipToUse,
+      '--port',
+      `${port ?? 0}`,
+      ...args,
+    ]);
 
-    const child = spawn(
-      command,
-      [
-        'run',
-        '--ip',
-        ipToUse,
-        '--port',
-        portToUse,
-        '--db-type',
-        'in-memory',
-        '--consensus-key',
-        consensusKey,
-        '--chain',
-        chainConfigPathToUse as string,
-        ...args,
-      ],
-      { detached: true }
-    );
+    const result = {
+      cleanup: () => {},
+      port: '',
+      ip: '',
+    };
 
     // Cleanup function where fuel-core is stopped.
     const cleanup = () => {
-      execSync(`kill -9 $(ps -s ${child.pid} -o pid=)`);
-      // kill(Number(child.pid), 'SIGKILL');
+      // execSync(
+      //   `kill -9 $(ps -A | grep -E $(lsof -i :${result.port} -t| tr '\n' '|' | sed '$s/|$//') | grep fuel-core | awk '{print $1;}')`
+      // );
+      // execSync(`kill -9 ${fuelCorePid}`);
+      kill(Number(child.pid));
 
       // Remove all the listeners we've added.
       child.stdout.removeAllListeners();
@@ -110,18 +115,19 @@ export const launchNode = async ({
       }
     };
 
-    child.stderr.setEncoding('utf8');
+    child!.stderr.setEncoding('utf8');
 
     // Look for a specific graphql start point in the output.
-    child.stderr.on('data', (chunk: string) => {
+    child!.stderr.on('data', (chunk: string) => {
       // Look for the graphql service start.
       if (chunk.indexOf(graphQLStartSubstring) !== -1) {
         // Resolve with the cleanup method.
-        resolve({
-          cleanup,
-          ip: ipToUse,
-          port: portToUse,
-        });
+        const [nodeIp, nodePort] = chunk.split(' ').at(-1)!.trim().split(':');
+        result.cleanup = cleanup;
+        result.ip = nodeIp;
+        result.port = nodePort;
+
+        resolve(result);
       }
     });
 

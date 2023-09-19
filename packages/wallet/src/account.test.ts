@@ -16,7 +16,6 @@ import * as providersMod from '@fuel-ts/providers';
 import { setupTestProvider } from '@fuel-ts/providers/test-utils';
 
 import { Account } from './account';
-import { FUEL_NETWORK_URL } from './configs';
 
 jest.mock('@fuel-ts/providers', () => ({
   __esModule: true,
